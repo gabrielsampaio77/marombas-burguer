@@ -1,0 +1,107 @@
+{
+  "cleanUrls": false,
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/cardapio",
+      "destination": "/#cardapio",
+      "permanent": true
+    },
+    {
+      "source": "/pedir",
+      "destination": "/?utm_source=link&utm_medium=atalho#cardapio",
+      "permanent": false
+    },
+    {
+      "source": "/faq",
+      "destination": "/#faq",
+      "permanent": true
+    },
+    {
+      "source": "/localizacao",
+      "destination": "/#localizacao",
+      "permanent": true
+    },
+    {
+      "source": "/privacidade",
+      "destination": "/privacidade.html",
+      "permanent": true
+    },
+    {
+      "source": "/painel",
+      "destination": "/admin.html",
+      "permanent": true
+    },
+    {
+      "source": "/instagram",
+      "destination": "/?utm_source=instagram&utm_medium=social&utm_campaign=bio",
+      "permanent": false
+    },
+    {
+      "source": "/google",
+      "destination": "/?utm_source=google&utm_medium=perfil_empresa",
+      "permanent": false
+    },
+    {
+      "source": "/qr",
+      "destination": "/?utm_source=qrcode&utm_medium=impresso",
+      "permanent": false
+    },
+    {
+      "source": "/whatsapp",
+      "destination": "https://wa.me/5569999293397?text=Ol%C3%A1!%20Vim%20pelo%20site%20da%20Marombas%20Burger%20e%20gostaria%20de%20fazer%20um%20pedido.",
+      "permanent": false
+    },
+    {
+      "source": "/rota",
+      "destination": "https://www.google.com/maps/dir/?api=1&destination=Rua+Aruba%2C+8739+-+Socialista%2C+Porto+Velho+-+RO%2C+78910-521",
+      "permanent": false
+    },
+    {
+      "source": "/avaliar",
+      "destination": "https://www.google.com/maps/search/?api=1&query=Marombas+Burger+Porto+Velho",
+      "permanent": false
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        }
+      ]
+    },
+    {
+      "source": "/admin.html",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        }
+      ]
+    },
+    {
+      "source": "/img/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=604800"
+        }
+      ]
+    }
+  ]
+}

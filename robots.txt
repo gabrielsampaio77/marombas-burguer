@@ -4,4 +4,4 @@ Disallow: /admin.html
 Disallow: /painel
 Disallow: /obrigado.html
 
-Sitemap: https://marombasburger.netlify.app/sitemap.xml
+Sitemap: https://marombas-burguer.vercel.app/sitemap.xml
