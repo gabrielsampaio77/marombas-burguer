@@ -1,0 +1,123 @@
+MAROMBAS BURGER – SITE + BANCO DE DADOS + PAINEL ADMINISTRATIVO
+==============================================================
+
+O QUE TEM NESTA PASTA
+---------------------
+index.html          Site / cardápio digital (o que o cliente vê)
+admin.html          PAINEL ADMINISTRATIVO (só o dono usa)
+obrigado.html       Página que aparece depois que o cliente envia o pedido
+privacidade.html    Política de privacidade (LGPD)
+404.html            Página para endereços que não existem
+robots.txt          Orienta o Google (esconde o painel e a página de obrigado)
+sitemap.xml         Lista de páginas para o Google
+_redirects          LINKS PERSONALIZADOS (veja abaixo) – funciona no Netlify
+_headers            Proteções básicas do site – funciona no Netlify
+og-image.jpg        Imagem que aparece ao compartilhar o link no WhatsApp/Instagram
+favicon.svg, apple-touch-icon.png, icone-512.png   Ícones do site
+js/config.js        Conexão com o banco e código do Google Analytics
+supabase/banco.sql  Cópia da estrutura do banco (já instalado)
+
+ONDE FICA O PAINEL
+------------------
+- No site: rodapé → coluna "Contato" → link "Área do lojista".
+- No navegador: seusite/admin.html  ou  seusite/painel
+
+LINKS PERSONALIZADOS (depois de publicar no Netlify)
+----------------------------------------------------
+seusite/cardapio     abre direto no cardápio
+seusite/pedir        cardápio (conta como "atalho" no Analytics)
+seusite/whatsapp     abre a conversa no WhatsApp da loja
+seusite/rota         rota no Google Maps até a loja
+seusite/avaliar      página da loja no Google para avaliar
+seusite/instagram    use na bio do Instagram (aparece separado no Analytics)
+seusite/google       use no Perfil da Empresa no Google
+seusite/qr           use em QR codes de panfletos, mesas e embalagens
+seusite/painel       painel administrativo
+Para criar outro: edite o arquivo _redirects (uma linha por link).
+ATENÇÃO: se trocar o número do WhatsApp no painel, troque também a linha /whatsapp do _redirects.
+
+GOOGLE ANALYTICS
+----------------
+1. Crie uma propriedade em https://analytics.google.com (Administrador → Criar → Propriedade).
+2. Em "Fluxos de dados" → "Web", copie o código que começa com G- .
+3. Cole em js/config.js no campo gaId. Ex.: gaId: "G-ABC123XYZ",
+O aviso de cookies aparece sozinho e o Analytics só liga quando o cliente aceita (LGPD).
+Eventos medidos: add_to_cart (adicionou à sacola), begin_checkout (finalizar pedido),
+generate_lead (enviou o pedido no WhatsApp), click_whatsapp, click_rota, click_mapa.
+Dica: no Analytics, marque generate_lead como "evento principal" (conversão).
+
+ENDEREÇO DO SITE
+----------------
+Os arquivos usam o endereço https://marombasburger.netlify.app.
+Se o seu site ficar em outro endereço (ou domínio próprio), peça para o Claude
+gerar de novo – ele troca em todos os arquivos (sitemap, robots, imagens de compartilhamento).
+
+BANCO DE DADOS: JÁ CONECTADO
+============================
+Projeto Supabase: marombas-burger (região São Paulo)
+Painel do Supabase: https://supabase.com/dashboard/project/hoxiseluilcageufdwxq
+Tabelas, segurança, pasta de fotos e os 18 produtos de exemplo já estão instalados.
+E-mail administrador: afiliado.aliexpress057@gmail.com
+
+FALTA SÓ ISTO (5 minutos)
+-------------------------
+1. CRIAR A SENHA DO DONO
+   https://supabase.com/dashboard/project/hoxiseluilcageufdwxq/auth/users
+   → "Add user" → "Create new user"
+   E-mail: afiliado.aliexpress057@gmail.com  · escolha uma senha · marque "Auto Confirm User".
+
+2. BLOQUEAR CADASTROS NOVOS (segurança)
+   https://supabase.com/dashboard/project/hoxiseluilcageufdwxq/auth/providers
+   Desligue "Allow new users to sign up" e salve.
+   (Mesmo ligado, ninguém de fora consegue editar nada; isso só evita contas inúteis.)
+
+3. PUBLICAR O SITE
+   Envie a pasta inteira para a hospedagem (todos os arquivos, inclusive _redirects e _headers).
+   Grátis e rápido: arraste a pasta em https://app.netlify.com/drop
+
+4. ENTRAR NO PAINEL
+   seusite/admin.html (ou seusite/painel) → e-mail e senha do passo 1.
+
+5. PRAZO DE RESPOSTA
+   No painel → "Dados da loja": confira o prazo de resposta (hoje "15 minutos"),
+   que aparece no site e no FAQ.
+   O selo no topo deve dizer "BANCO CONECTADO".
+
+TROCAR O E-MAIL DO DONO OU ADICIONAR OUTRO ADMINISTRADOR
+   Supabase → SQL Editor → rode:
+   insert into public.admins (email) values ('outro@email.com');
+   E crie o usuário com esse e-mail no passo 1.
+
+O QUE DÁ PARA FAZER NO PAINEL
+-----------------------------
+Produtos     Cadastrar, editar, excluir, enviar foto (do celular ou PC),
+             mudar preço, descrição, selo ("Mais pedido") e a ordem.
+             Botão verde: marca como ESGOTADO e some do site na hora.
+Categorias   Criar, renomear, ocultar, excluir (se estiver vazia) e
+             mudar a ordem das abas do cardápio.
+Dados da loja  WhatsApp que recebe os pedidos, telefone, endereço,
+             horário e prazo de resposta. A taxa de entrega não aparece
+             no site: é informada ao cliente pelo WhatsApp.
+
+Tudo o que é salvo no painel aparece no site assim que o cliente abre
+ou atualiza a página.
+
+FOTOS
+-----
+As fotos são reduzidas automaticamente antes de enviar (máx. 1200px).
+Fotos na horizontal 4:3 ou quadradas ficam melhores no cardápio.
+O plano grátis do Supabase guarda 1 GB de arquivos (milhares de fotos).
+
+ESQUECI A SENHA
+---------------
+Na tela de login do painel, digite o e-mail e toque em
+"Esqueci minha senha". Ou troque a senha no Supabase em
+Authentication → Users.
+
+SE O SITE NÃO CARREGAR O CARDÁPIO
+---------------------------------
+- Confira se colou a URL e a chave certas em js/config.js.
+- Se o banco ficar fora do ar, o site mostra a última cópia do
+  cardápio que o cliente já viu, ou os produtos de exemplo.
+- Projetos grátis do Supabase são pausados depois de 7 dias sem
+  nenhum acesso. Se acontecer, entre no Supabase e clique em "Restore".

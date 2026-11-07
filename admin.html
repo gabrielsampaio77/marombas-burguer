@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Painel Marombas</title>
+<meta name="description" content="Área restrita do lojista para gerenciar cardápio, fotos e dados da Marombas Burger.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0e0c09">
+<link rel="icon" href="favicon.png" type="image/png" sizes="48x48">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&display=swap">
+<style>
+/* Layout: painel de uso diário — barra fixa no topo, abas, listas em linhas, editor em gaveta (tela cheia no celular). */
+:root{
+  --ink:#0e0c09; --ink-2:#17140f; --ink-3:#221e16; --line:#383123; --line-2:#4a4130;
+  --yellow:#ffc21a; --yellow-soft:#ffd75c; --red:#e3271c; --red-hot:#ff4636; --fire:#ff7a12;
+  --white:#f8f4ea; --mute:#a9a08b; --ok:#3ccf6e; --ok-bg:rgba(60,207,110,.14); --warn-bg:rgba(255,70,54,.14);
+  --glass:rgba(14,12,9,.9); --shade:rgba(0,0,0,.6);
+  --f-display:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
+  --f-body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-label:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0;min-height:100vh;background:radial-gradient(80% 50% at 100% 0%,rgba(255,122,18,.12),transparent 70%),var(--ink);color:var(--white);font-family:var(--f-body);font-size:16px;line-height:1.45;-webkit-font-smoothing:antialiased}
+[hidden]{display:none!important}
+img{max-width:100%}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
+.wrap{max-width:1040px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.num{font-variant-numeric:tabular-nums}
+h1,h2,h3{font-family:var(--f-display);text-transform:uppercase;line-height:.95;margin:0;letter-spacing:.01em}
+.label{font-family:var(--f-label);font-weight:700;letter-spacing:.1em;text-transform:uppercase;font-size:.8rem;color:var(--mute)}
+
+/* Topo */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:var(--glass);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:31;background:var(--ink)}
+.top .wrap{display:flex;align-items:center;gap:12px;min-height:62px;flex-wrap:wrap;padding-block:8px}
+.brand{display:flex;align-items:center;gap:10px;margin-right:auto;text-decoration:none}
+.brand img{display:block;height:44px;width:auto;flex:none}
+.brand b{display:block;font-family:var(--f-display);font-weight:900;font-size:1.3rem;line-height:.9;text-transform:uppercase}
+.brand small{display:block;font-family:var(--f-label);font-weight:700;letter-spacing:.24em;color:var(--fire);font-size:.72rem}
+.chip-mode{font-family:var(--f-label);font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:.75rem;padding:.3em .7em;border-radius:999px;border:1px solid var(--line-2);color:var(--mute)}
+.chip-mode.demo{border-color:var(--yellow);color:var(--yellow)}
+.chip-mode.banco{border-color:var(--ok);color:var(--ok)}
+.who{font-size:.85rem;color:var(--mute);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* Botões */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.45em;border:0;border-radius:10px;padding:.7em 1.1em;font-family:var(--f-label);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:.98rem;text-decoration:none;white-space:nowrap;transition:background .15s,transform .1s}
+.btn:active{transform:scale(.97)}
+.btn svg{width:1.15em;height:1.15em;flex:none}
+.btn-yellow{background:var(--yellow);color:var(--ink)}
+.btn-yellow:hover{background:var(--yellow-soft)}
+.btn-ghost{background:var(--ink-3);border:1px solid var(--line-2)}
+.btn-ghost:hover{border-color:var(--mute)}
+.btn-danger{background:transparent;border:1px solid rgba(255,70,54,.5);color:var(--red-hot)}
+.btn-danger.armed{background:var(--red);color:var(--white);border-color:var(--red)}
+.btn-sm{padding:.5em .8em;font-size:.88rem}
+.btn:disabled{opacity:.5;pointer-events:none}
+.icon-btn{width:40px;height:40px;border-radius:10px;border:1px solid var(--line-2);background:var(--ink-3);display:inline-grid;place-items:center;flex:none}
+.icon-btn svg{width:18px;height:18px}
+.icon-btn:disabled{opacity:.3;pointer-events:none}
+.icon-btn:hover{border-color:var(--mute)}
+
+/* Aviso de modo demonstração */
+.banner{margin-top:16px;border:1px dashed var(--yellow);background:rgba(255,194,26,.07);border-radius:12px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}
+.banner p{margin:0;flex:1 1 260px;color:var(--white);font-size:.95rem}
+.banner p b{color:var(--yellow)}
+.banner.offline{border-color:var(--red-hot);background:var(--warn-bg)}
+
+/* Login */
+.login{min-height:calc(100vh - 140px);display:grid;place-items:center;padding-block:32px}
+.login-card{width:min(420px,100%);background:var(--ink-2);border:1px solid var(--line);border-radius:16px;padding:28px 22px;display:grid;gap:16px}
+.login-card h1{font-size:2.4rem}
+.login-card p{margin:0;color:var(--mute)}
+.linkish{background:none;border:0;padding:0;color:var(--yellow);text-decoration:underline;font-size:.92rem;justify-self:start}
+
+/* Campos */
+.field{display:grid;gap:6px;min-width:0}
+.field > span{font-family:var(--f-label);font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:.85rem;color:var(--mute)}
+.field small{color:var(--mute);font-size:.82rem}
+.input,select.input,textarea.input{width:100%;background:var(--ink);border:2px solid var(--line);border-radius:10px;padding:.7em .85em;font-size:1rem}
+textarea.input{resize:vertical;min-height:90px}
+.input:focus{border-color:var(--yellow);outline:none}
+.prefix{display:flex;align-items:center;background:var(--ink);border:2px solid var(--line);border-radius:10px;overflow:hidden}
+.prefix:focus-within{border-color:var(--yellow)}
+.prefix b{padding:0 .2em 0 .85em;color:var(--mute);font-weight:600}
+.prefix .input{border:0;border-radius:0;padding-left:.35em}
+.err{color:var(--red-hot);font-size:.92rem;min-height:1.2em;margin:0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:560px){.grid2{grid-template-columns:1fr}}
+
+/* Interruptor */
+.switch{display:inline-flex;align-items:center;gap:10px;cursor:pointer;user-select:none}
+.switch input{position:absolute;opacity:0;width:1px;height:1px}
+.switch .track{width:46px;height:26px;border-radius:13px;background:var(--line-2);position:relative;transition:background .2s;flex:none}
+.switch .track::after{content:"";position:absolute;left:3px;top:3px;width:20px;height:20px;border-radius:50%;background:var(--white);transition:transform .2s}
+.switch input:checked + .track{background:var(--ok)}
+.switch input:checked + .track::after{transform:translateX(20px)}
+.switch input:focus-visible + .track{outline:3px solid var(--yellow);outline-offset:2px}
+.switch .txt{font-family:var(--f-label);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:.85rem}
+
+/* Abas */
+.tabs{display:flex;gap:6px;margin:20px 0 4px;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{background:none;border:0;border-bottom:3px solid transparent;padding:.8em 1em;font-family:var(--f-label);font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:1.02rem;color:var(--mute);white-space:nowrap}
+.tab[aria-selected="true"]{color:var(--white);border-color:var(--yellow)}
+.tab em{font-style:normal;font-size:.8em;opacity:.7;margin-left:4px}
+.panel{padding-block:18px 120px}
+
+/* Barra de ferramentas */
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.toolbar .search{flex:1 1 220px;position:relative}
+.toolbar .search svg{position:absolute;left:12px;top:50%;width:18px;height:18px;transform:translateY(-50%);color:var(--mute)}
+.toolbar .search .input{padding-left:38px}
+.toolbar select.input{flex:0 1 200px;width:auto}
+.stats{display:flex;gap:16px;flex-wrap:wrap;color:var(--mute);font-size:.92rem;margin-bottom:6px}
+.stats b{color:var(--white)}
+
+/* Lista de produtos */
+.group{margin-top:22px}
+.group-head{display:flex;align-items:baseline;gap:10px;padding-bottom:8px;border-bottom:1px solid var(--line);margin-bottom:6px}
+.group-head h2{font-size:1.6rem}
+.group-head span{color:var(--mute);font-family:var(--f-label);font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:.85rem}
+.group-head .hidden-tag{color:var(--red-hot)}
+.row{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 0;border-bottom:1px dashed var(--line)}
+.thumb{width:64px;height:64px;border-radius:10px;overflow:hidden;background:radial-gradient(70% 70% at 50% 85%,rgba(255,122,18,.45),transparent 75%),var(--ink-3);display:grid;place-items:center}
+.thumb img{width:100%;height:100%;object-fit:cover}
+.thumb svg{width:90%;height:auto}
+.nofoto{font-family:var(--f-label);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:.72rem;color:var(--mute);text-align:center;line-height:1.2}
+.nofoto small{font-weight:600;letter-spacing:.02em;text-transform:none}
+.row-info{min-width:0;display:grid;gap:2px}
+.row-info b{font-family:var(--f-display);font-weight:800;text-transform:uppercase;font-size:1.25rem;line-height:1;overflow-wrap:anywhere}
+.row-info .meta{color:var(--mute);font-size:.88rem;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.row-info .price{color:var(--yellow);font-weight:700}
+.tag{font-family:var(--f-label);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:.72rem;padding:.15em .5em;border-radius:5px;background:var(--red);color:var(--white)}
+.tag.out{background:var(--warn-bg);color:var(--red-hot);border:1px solid rgba(255,70,54,.4)}
+.tag.photo{background:var(--ok-bg);color:var(--ok)}
+.row-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.row.off .thumb,.row.off .row-info b{opacity:.5}
+.order{display:flex;gap:4px}
+@media (max-width:640px){
+  .row{grid-template-columns:56px minmax(0,1fr);row-gap:10px}
+  .thumb{width:56px;height:56px}
+  .row-actions{grid-column:1/-1;justify-content:space-between}
+}
+.empty{padding:40px 16px;text-align:center;color:var(--mute);border:1px dashed var(--line-2);border-radius:12px;margin-top:16px}
+
+/* Categorias */
+.cat-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1px dashed var(--line)}
+.cat-row .count{color:var(--mute);font-size:.88rem;white-space:nowrap}
+.cat-row .right{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+@media (max-width:640px){.cat-row{grid-template-columns:auto minmax(0,1fr)}.cat-row .right{grid-column:1/-1;justify-content:space-between}}
+.add-cat{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+.add-cat .input{flex:1 1 220px}
+
+/* Loja */
+.card{background:var(--ink-2);border:1px solid var(--line);border-radius:14px;padding:20px 18px;display:grid;gap:16px;max-width:720px}
+.card h2{font-size:1.6rem}
+.radios{display:flex;gap:8px;flex-wrap:wrap}
+.radios label{display:inline-flex;align-items:center;gap:8px;border:2px solid var(--line);border-radius:10px;padding:.55em .9em;cursor:pointer;font-weight:600}
+.radios input{accent-color:var(--yellow)}
+.radios label:has(input:checked){border-color:var(--yellow);color:var(--yellow)}
+
+/* Editor (gaveta) */
+.overlay{position:fixed;inset:0;background:var(--shade);z-index:60;opacity:0;pointer-events:none;transition:opacity .2s}
+.overlay.open{opacity:1;pointer-events:auto}
+.sheet{overflow:hidden;position:fixed;z-index:70;top:0;right:0;bottom:0;width:min(560px,100%);background:var(--ink-2);border-left:1px solid var(--line);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .28s cubic-bezier(.2,.8,.2,1);padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);padding-right:env(safe-area-inset-right,0px);height:100%;height:100dvh}
+.sheet.open{transform:none}
+.sheet-head{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line)}
+.sheet-head h2{flex:1;font-size:1.8rem}
+.sheet-body{flex:1;overflow-y:auto;overflow-x:hidden;padding:18px;display:grid;grid-template-columns:minmax(0,1fr);gap:16px;align-content:start}
+.sheet-foot{border-top:1px solid var(--line);padding:14px 18px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.sheet-foot .spacer{flex:1}
+.photo{display:grid;grid-template-columns:150px minmax(0,1fr);gap:14px;align-items:center}
+.photo-box{position:relative;width:150px;aspect-ratio:1;border-radius:12px;overflow:hidden;border:2px dashed var(--line-2);background:radial-gradient(70% 70% at 50% 85%,rgba(255,122,18,.45),transparent 75%),var(--ink-3);display:grid;place-items:center;cursor:pointer}
+.photo-box.drag{border-color:var(--yellow)}
+.photo-box img{width:100%;height:100%;object-fit:cover}
+.photo-box svg{width:88%;height:auto}
+.photo-box .busy{position:absolute;inset:0;background:var(--glass);display:grid;place-items:center;font-family:var(--f-label);font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:.85rem}
+.photo-actions{display:grid;gap:8px;justify-items:start}
+.photo-actions small{color:var(--mute);font-size:.85rem}
+@media (max-width:420px){.photo{grid-template-columns:1fr}.photo-box{width:100%;max-width:240px}}
+
+/* Aviso */
+.sheet-foot #prodSave{min-width:140px}
+@media (max-width:480px){
+  .tab{flex:1 0 auto;padding:.8em .55em;font-size:.95rem}
+  .sheet-foot{gap:8px}
+  .sheet-foot .spacer{display:none}
+  .sheet-foot #prodSave{order:-1;flex:1 1 100%}
+  .sheet-foot #prodCancel,.sheet-foot #prodDelete{flex:1 1 0}
+  .photo-box{max-width:200px}
+}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:var(--white);color:var(--ink);font-weight:600;padding:.75em 1.2em;border-radius:999px;box-shadow:0 10px 30px var(--shade);opacity:0;pointer-events:none;transition:all .25s;z-index:90;max-width:calc(100% - 32px);text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.toast.bad{background:var(--red);color:var(--white)}
+.loading{padding:60px 0;text-align:center;color:var(--mute)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="index.html" title="Ver o site">
+      <img src="img/logo.webp" alt="Marombas Burger" width="110" height="43"><small>PAINEL</small>
+    </a>
+    <span class="chip-mode" id="modeChip"></span>
+    <span class="who" id="who" hidden></span>
+    <a class="btn btn-ghost btn-sm" href="index.html" target="_blank" rel="noopener">Ver site ↗</a>
+    <button class="btn btn-ghost btn-sm" id="logoutBtn" hidden>Sair</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="banner" id="demoBanner" hidden>
+    <p><b>Modo demonstração.</b> O banco de dados ainda não foi conectado, então tudo o que você salvar aqui fica guardado só neste navegador. Para a loja de verdade, siga o arquivo <b>LEIA-ME</b> e preencha <b>js/config.js</b>.</p>
+    <button class="btn btn-ghost btn-sm" id="resetDemo">Restaurar exemplos</button>
+  </div>
+  <div class="banner offline" id="offlineBanner" hidden>
+    <p><b>Sem conexão com o banco.</b> Mostrando a última cópia salva. Alterações não podem ser gravadas agora.</p>
+  </div>
+
+  <!-- LOGIN -->
+  <section class="login" id="loginView" hidden>
+    <form class="login-card" id="loginForm" novalidate>
+      <div class="label">Área do lojista</div>
+      <h1>Entrar no painel</h1>
+      <p>Use o e-mail e a senha cadastrados para o dono da Marombas Burger.</p>
+      <label class="field" for="lEmail"><span>E-mail</span><input class="input" id="lEmail" type="email" autocomplete="username" required></label>
+      <label class="field" for="lSenha"><span>Senha</span><input class="input" id="lSenha" type="password" autocomplete="current-password" required></label>
+      <p class="err" id="loginErr" role="alert"></p>
+      <button class="btn btn-yellow" id="loginBtn" type="submit">Entrar</button>
+      <button class="linkish" type="button" id="forgotBtn">Esqueci minha senha</button>
+    </form>
+  </section>
+
+  <!-- APP -->
+  <section id="appView" hidden>
+    <nav class="tabs" role="tablist" aria-label="Seções do painel">
+      <button class="tab" role="tab" id="tab-produtos" aria-controls="p-produtos" aria-selected="true">Produtos <em id="tProdCount"></em></button>
+      <button class="tab" role="tab" id="tab-categorias" aria-controls="p-categorias" aria-selected="false">Categorias <em id="tCatCount"></em></button>
+      <button class="tab" role="tab" id="tab-loja" aria-controls="p-loja" aria-selected="false">Dados da loja</button>
+    </nav>
+
+    <!-- Produtos -->
+    <div class="panel" id="p-produtos" role="tabpanel" aria-labelledby="tab-produtos">
+      <div class="toolbar">
+        <label class="search" for="fBusca"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input class="input" id="fBusca" type="search" placeholder="Buscar produto" aria-label="Buscar produto"></label>
+        <select class="input" id="fCat" aria-label="Filtrar por categoria"></select>
+        <button class="btn btn-yellow" id="newProd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Novo produto</button>
+      </div>
+      <div class="stats" id="stats"></div>
+      <div id="prodList"><div class="loading">Carregando produtos…</div></div>
+    </div>
+
+    <!-- Categorias -->
+    <div class="panel" id="p-categorias" role="tabpanel" aria-labelledby="tab-categorias" hidden>
+      <p style="color:var(--mute);margin:0 0 8px;max-width:60ch">A ordem aqui é a ordem das abas do cardápio no site. Categorias ocultas somem do site junto com os produtos delas.</p>
+      <div id="catList"></div>
+      <form class="add-cat" id="addCat" novalidate>
+        <input class="input" id="newCatName" placeholder="Nome da nova categoria (ex.: Sobremesas)" aria-label="Nome da nova categoria">
+        <button class="btn btn-yellow" type="submit">Adicionar categoria</button>
+      </form>
+    </div>
+
+    <!-- Loja -->
+    <div class="panel" id="p-loja" role="tabpanel" aria-labelledby="tab-loja" hidden>
+      <form class="card" id="lojaForm" novalidate>
+        <h2>Dados da loja</h2>
+        <label class="field" for="cNome"><span>Nome da loja</span><input class="input" id="cNome"></label>
+        <div class="grid2">
+          <label class="field" for="cWhats"><span>WhatsApp dos pedidos</span><input class="input num" id="cWhats" inputmode="numeric" placeholder="5569999293397"><small>Só números: 55 + DDD + número.</small></label>
+          <label class="field" for="cTel"><span>Telefone exibido no site</span><input class="input" id="cTel" placeholder="(69) 99929-3397"></label>
+        </div>
+        <label class="field" for="cEnd"><span>Endereço (rua, número e bairro)</span><input class="input" id="cEnd"></label>
+        <label class="field" for="cCid"><span>Cidade, estado e CEP</span><input class="input" id="cCid"></label>
+        <div class="grid2">
+          <label class="field" for="cHor"><span>Horário de funcionamento</span><input class="input" id="cHor" placeholder="Abre às 16h"></label>
+          <label class="field" for="cResp"><span>Prazo de resposta no WhatsApp</span><input class="input" id="cResp" placeholder="15 minutos"><small>Aparece no site como “Respondemos em até …”.</small></label>
+        </div>
+        <p style="margin:0;color:var(--mute);font-size:.92rem">A taxa de entrega não aparece no site: o cliente fica sabendo o valor pelo WhatsApp, quando vocês confirmam o pedido.</p>
+        <p class="err" id="lojaErr" role="alert"></p>
+        <div><button class="btn btn-yellow" type="submit" id="lojaSave">Salvar dados da loja</button></div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<!-- EDITOR DE PRODUTO -->
+<div class="overlay" id="overlay"></div>
+<aside class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" aria-hidden="true">
+  <div class="sheet-head">
+    <h2 id="sheetTitle">Novo produto</h2>
+    <button class="icon-btn" id="sheetClose" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  </div>
+  <form class="sheet-body" id="prodForm" novalidate>
+    <div class="field">
+      <span>Foto do produto</span>
+      <div class="photo">
+        <div class="photo-box" id="photoBox" tabindex="0" role="button" aria-label="Escolher foto">
+          <div id="photoPreview"></div>
+          <div class="busy" id="photoBusy" hidden>Enviando…</div>
+        </div>
+        <div class="photo-actions">
+          <button class="btn btn-ghost btn-sm" type="button" id="photoPick">Escolher foto</button>
+          <button class="btn btn-danger btn-sm" type="button" id="photoRemove" hidden>Remover foto</button>
+          <small>JPG, PNG ou WEBP. A foto é reduzida automaticamente. Formato quadrado ou 4:3 fica melhor. Sem foto, o produto aparece no site só com nome, descrição e preço.</small>
+          <input type="file" id="photoInput" accept="image/jpeg,image/png,image/webp" hidden>
+        </div>
+      </div>
+    </div>
+    <label class="field" for="pArte" id="arteWrap"><span>Ilustração (usada enquanto não houver foto)</span>
+      <select class="input" id="pArte">
+        <option value="burger">Hambúrguer simples</option>
+        <option value="burger2">Hambúrguer duplo com bacon</option>
+        <option value="burger3">Hambúrguer triplo</option>
+        <option value="chicken">Hambúrguer de frango</option>
+        <option value="combo">Combo (lanche + fritas + lata)</option>
+        <option value="fries">Batata frita</option>
+        <option value="fries-cheddar">Batata com cheddar e bacon</option>
+        <option value="rings">Anéis de cebola</option>
+        <option value="acai">Açaí</option>
+        <option value="acai-morango">Açaí com morango</option>
+        <option value="can">Refrigerante lata</option>
+        <option value="bottle">Refrigerante 2L</option>
+        <option value="juice">Suco</option>
+        <option value="water">Água</option>
+      </select>
+    </label>
+    <label class="field" for="pNome"><span>Nome</span><input class="input" id="pNome" maxlength="60" required></label>
+    <div class="grid2">
+      <label class="field" for="pCat"><span>Categoria</span><select class="input" id="pCat"></select></label>
+      <label class="field" for="pPreco"><span>Preço</span><span class="prefix"><b>R$</b><input class="input num" id="pPreco" inputmode="decimal" placeholder="0,00" required></span></label>
+    </div>
+    <label class="field" for="pSpec"><span>Detalhe curto</span><input class="input" id="pSpec" maxlength="50" placeholder="Ex.: 2 × 150g · 500ml · 12 unidades"></label>
+    <label class="field" for="pDesc"><span>Descrição</span><textarea class="input" id="pDesc" maxlength="300" placeholder="Ingredientes e detalhes do produto"></textarea></label>
+    <label class="field" for="pBadge"><span>Selo (opcional)</span><input class="input" id="pBadge" maxlength="18" placeholder="Ex.: Mais pedido, Novo, Promoção"></label>
+    <label class="switch" for="pAtivo"><input type="checkbox" id="pAtivo"><span class="track"></span><span class="txt" id="pAtivoTxt">Disponível no cardápio</span></label>
+    <p class="err" id="prodErr" role="alert"></p>
+  </form>
+  <div class="sheet-foot">
+    <button class="btn btn-danger" type="button" id="prodDelete">Excluir</button>
+    <span class="spacer"></span>
+    <button class="btn btn-ghost" type="button" id="prodCancel">Cancelar</button>
+    <button class="btn btn-yellow" type="submit" form="prodForm" id="prodSave">Salvar</button>
+  </div>
+</aside>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="js/config.js"></script>
+<script>
+/* Marombas Burger – ilustrações dos produtos (usadas quando o produto não tem foto) */
+/* =====================================================================
+   ILUSTRAÇÕES DOS PRODUTOS (SVG desenhado no código)
+   Quando o produto tem foto cadastrada no painel, a foto é usada no lugar.
+   ===================================================================== */
+var C = { bun:"#e39a3b", bunDark:"#b8702a", bunLight:"#f4c06b", patty:"#4a2412", pattyDot:"#2e150a",
+  chicken:"#c98a3a", chickenDot:"#a86a22", cheddar:"#ffb000", white:"#f6e7b4", bacon:"#b33a1f", baconFat:"#f0a58c",
+  lettuce:"#4caf50", tomato:"#e3271c", onion:"#c58ac2", sesame:"#fff3d6" };
+
+function burgerG(o){
+  const L=[]; // de baixo para cima
+  L.push({h:22, d:y=>`<path d="M32 ${y} H168 Q170 ${y+20} 148 ${y+22} H52 Q30 ${y+20} 32 ${y}Z" fill="${C.bunDark}"/><rect x="32" y="${y}" width="136" height="7" rx="3" fill="${C.bun}"/>`});
+  if(o.lettuce) L.push({h:7, d:y=>`<path d="M22 ${y+4} q9 -9 18 0 t18 0 t18 0 t18 0 t18 0 t18 0 t18 0 t18 0" stroke="${C.lettuce}" stroke-width="8" fill="none" stroke-linecap="round"/>`});
+  if(o.tomato) L.push({h:8, d:y=>`<rect x="34" y="${y}" width="60" height="9" rx="4" fill="${C.tomato}"/><rect x="104" y="${y}" width="62" height="9" rx="4" fill="${C.tomato}"/>`});
+  for(let i=0;i<(o.patties||1);i++){
+    const col=o.chicken?C.chicken:C.patty, dot=o.chicken?C.chickenDot:C.pattyDot;
+    L.push({h:20, d:y=>`<rect x="24" y="${y}" width="152" height="21" rx="10" fill="${col}"/>`+
+      [40,62,88,112,136,158].map((x,k)=>`<ellipse cx="${x}" cy="${y+(k%2?7:13)}" rx="3" ry="1.8" fill="${dot}"/>`).join("")});
+    if(o.cheese){
+      const cc=o.cheese==="cheddar"?C.cheddar:C.white, s=i*13;
+      L.push({h:6, d:y=>`<path d="M20 ${y} H180 L178 ${y+7} L${150-s} ${y+7} L${145-s} ${y+19} L${140-s} ${y+7} L${100+s} ${y+7} L${95+s} ${y+16} L${90+s} ${y+7} L${62-s/2} ${y+7} L${57-s/2} ${y+21} L${52-s/2} ${y+7} L22 ${y+7}Z" fill="${cc}"/>`});
+    }
+  }
+  if(o.bacon) L.push({h:9, d:y=>`<path d="M26 ${y+5} q11 -9 22 0 t22 0 t22 0 t22 0 t22 0 t22 0 t20 0" stroke="${C.bacon}" stroke-width="9" fill="none" stroke-linecap="round"/><path d="M26 ${y+5} q11 -9 22 0 t22 0 t22 0 t22 0 t22 0 t22 0 t20 0" stroke="${C.baconFat}" stroke-width="2" fill="none" stroke-linecap="round" opacity=".7"/>`});
+  if(o.onion) L.push({h:6, d:y=>[42,70,98,126,154].map(x=>`<ellipse cx="${x}" cy="${y+3}" rx="13" ry="4" fill="none" stroke="${C.onion}" stroke-width="3"/>`).join("")});
+  L.push({h:52, d:y=>{
+    let s=`<path d="M24 ${y+52} Q22 ${y} 100 ${y} Q178 ${y} 176 ${y+52}Z" fill="${C.bun}"/><path d="M40 ${y+26} Q52 ${y+8} 84 ${y+6}" stroke="${C.bunLight}" stroke-width="6" stroke-linecap="round" fill="none" opacity=".8"/>`;
+    [[70,18,-20],[100,12,0],[128,19,20],[56,32,-30],[88,28,10],[116,30,-10],[146,34,25],[78,42,15],[136,44,-15]].forEach(([x,yy,r])=>{s+=`<ellipse cx="${x}" cy="${y+yy}" rx="4.5" ry="2.2" fill="${C.sesame}" transform="rotate(${r} ${x} ${y+yy})"/>`});
+    return s;}});
+  const overlap=3, total=L.reduce((a,l)=>a+l.h-overlap,0)+overlap;
+  let y=Math.max(4,(158-total)/2)+total; // base
+  let out=`<ellipse cx="100" cy="${Math.min(166,y+4)}" rx="80" ry="6" fill="#000" opacity=".35"/>`;
+  L.forEach(l=>{ y-=l.h; out+=l.d(y); y+=overlap; });
+  return out;
+}
+function friesG(o){
+  let s="";
+  [[62,-12],[74,-6],[86,-14],[98,-3],[110,-10],[122,-2],[134,-12],[80,4],[104,6],[128,2]].forEach(([x,t],i)=>{
+    s+=`<rect x="${x}" y="${30+(i%3)*6}" width="10" height="70" rx="2" fill="${i%2?'#ffd34d':'#ffc21a'}" transform="rotate(${t} ${x+5} 100)"/>`;
+  });
+  if(o.cheddar) s+=`<path d="M58 70 q10 -12 22 -2 t24 -2 t24 2 t18 -4 v14 H58Z" fill="${C.cheddar}"/>`+[70,92,112,134].map(x=>`<rect x="${x}" y="66" width="8" height="6" rx="1.5" fill="${C.bacon}"/>`).join("");
+  s+=`<path d="M52 78 H148 L138 158 H62Z" fill="#e3271c"/><path d="M52 78 H148 L146 90 H54Z" fill="#b51d14"/>`+
+     `<text x="100" y="130" text-anchor="middle" font-family="Big Shoulders Display, Impact, sans-serif" font-weight="900" font-size="26" fill="#ffc21a">MB</text>`;
+  return `<ellipse cx="100" cy="162" rx="50" ry="5" fill="#000" opacity=".35"/>`+s;
+}
+function ringsG(){
+  let s=`<ellipse cx="100" cy="150" rx="78" ry="12" fill="#2a251b"/><ellipse cx="100" cy="146" rx="74" ry="10" fill="#3a3426"/>`;
+  [[70,122,-10],[118,126,8],[94,104,-4],[138,104,14],[62,96,-18]].forEach(([x,y,r])=>{
+    s+=`<g transform="rotate(${r} ${x} ${y})"><ellipse cx="${x}" cy="${y}" rx="30" ry="22" fill="none" stroke="#b8702a" stroke-width="15"/><ellipse cx="${x}" cy="${y-2}" rx="30" ry="22" fill="none" stroke="#e8a64a" stroke-width="10"/></g>`;
+  });
+  return s+`<ellipse cx="160" cy="138" rx="16" ry="7" fill="#6b1d10"/>`;
+}
+function acaiG(o){
+  let s=`<ellipse cx="100" cy="162" rx="58" ry="5" fill="#000" opacity=".35"/>`+
+    `<path d="M40 80 H160 L146 156 H54Z" fill="#f8f4ea" opacity=".9"/><path d="M40 80 H160 L156 100 H44Z" fill="#4b1754"/>`+
+    `<ellipse cx="100" cy="80" rx="62" ry="16" fill="#5b1d66"/><path d="M44 78 q20 -30 56 -34 q36 4 56 34Z" fill="#6d2479"/>`;
+  [[70,62],[96,54],[124,60]].forEach(([x,y])=>{s+=`<ellipse cx="${x}" cy="${y}" rx="11" ry="6" fill="#f6e3a1" stroke="#e5c66b" stroke-width="2"/>`});
+  for(let i=0;i<18;i++){const x=58+(i*37)%86, y=66+(i*13)%14; s+=`<circle cx="${x}" cy="${y}" r="2.6" fill="#c08a3e"/>`;}
+  if(o.strawberry) s+=`<path d="M108 48 q8 -8 16 0 q-2 12 -8 16 q-6 -4 -8 -16Z" fill="#e3271c"/><path d="M112 46 l4 -5 l4 5" stroke="#4caf50" stroke-width="2.5" fill="none"/>`;
+  if(o.drizzle) s+=`<path d="M56 64 q14 -12 28 0 t28 0 t28 0" stroke="#e8c48a" stroke-width="4" fill="none" stroke-linecap="round"/>`;
+  s+=`<rect x="92" y="10" width="7" height="58" rx="3" fill="#e3271c" transform="rotate(14 95 40)"/>`;
+  return s;
+}
+function canG(o){
+  const x=o.x||70, sc=o.sc||1;
+  return `<g transform="translate(${x} ${o.y||22}) scale(${sc})"><ellipse cx="30" cy="136" rx="34" ry="5" fill="#000" opacity=".35"/><rect x="0" y="10" width="60" height="124" rx="10" fill="#e3271c"/><rect x="0" y="54" width="60" height="34" fill="#f8f4ea"/><text x="30" y="78" text-anchor="middle" font-family="Big Shoulders Display, Impact, sans-serif" font-weight="900" font-size="18" fill="#e3271c">GELADA</text><rect x="4" y="2" width="52" height="12" rx="5" fill="#cfc6b0"/><rect x="8" y="16" width="6" height="110" rx="3" fill="#fff" opacity=".18"/></g>`;
+}
+function bottleG(){
+  return `<ellipse cx="100" cy="162" rx="36" ry="5" fill="#000" opacity=".35"/><path d="M88 6 h24 v18 q22 14 22 40 v88 q0 8 -8 8 h-52 q-8 0 -8 -8 v-88 q0 -26 22 -40Z" fill="#3a0f0b"/><path d="M66 70 h68 v40 h-68Z" fill="#e3271c"/><text x="100" y="96" text-anchor="middle" font-family="Big Shoulders Display, Impact, sans-serif" font-weight="900" font-size="18" fill="#ffc21a">2 LITROS</text><rect x="86" y="0" width="28" height="10" rx="3" fill="#e3271c"/><rect x="72" y="40" width="6" height="104" rx="3" fill="#fff" opacity=".15"/>`;
+}
+function juiceG(){
+  return `<ellipse cx="100" cy="162" rx="40" ry="5" fill="#000" opacity=".35"/><rect x="108" y="4" width="8" height="80" rx="3" fill="#ffc21a" transform="rotate(12 112 44)"/><path d="M62 40 H138 L128 158 H72Z" fill="#f8f4ea" opacity=".25"/><path d="M66 60 H134 L126 154 H74Z" fill="#ff9a1a"/><ellipse cx="100" cy="60" rx="34" ry="5" fill="#ffb84a"/><circle cx="134" cy="46" r="16" fill="#ffc21a" stroke="#f8f4ea" stroke-width="3"/><path d="M134 34 v24 M122 46 h24 M125 37 l18 18 M143 37 l-18 18" stroke="#f8f4ea" stroke-width="1.5"/>`;
+}
+function waterG(){
+  return `<ellipse cx="100" cy="162" rx="30" ry="5" fill="#000" opacity=".35"/><rect x="88" y="4" width="24" height="12" rx="3" fill="#2f8fd6"/><path d="M86 16 h28 q16 10 16 28 v106 q0 8 -8 8 h-44 q-8 0 -8 -8 v-106 q0 -18 16 -28Z" fill="#bfe3fb" opacity=".85"/><rect x="70" y="72" width="60" height="38" fill="#2f8fd6"/><text x="100" y="96" text-anchor="middle" font-family="Big Shoulders Display, Impact, sans-serif" font-weight="900" font-size="15" fill="#f8f4ea">ÁGUA</text>`;
+}
+function comboG(o){
+  return `<g transform="translate(-14 14) scale(.82)">${burgerG(o.burger)}</g>`+
+         `<g transform="translate(96 54) scale(.55)">${friesG({cheddar:o.cheddar})}</g>`+
+         canG({x:150,y:72,sc:.55});
+}
+function art(a, label){
+  const map={burger:()=>burgerG(a), fries:()=>friesG(a), rings:ringsG, acai:()=>acaiG(a), can:()=>canG({}), bottle:bottleG, juice:juiceG, water:waterG, combo:()=>comboG(a)};
+  return `<svg viewBox="0 0 200 170" role="img" aria-label="${label||''}">${(map[a.type]||map.burger)()}</svg>`;
+}
+
+
+</script>
+<script>
+/* =====================================================================
+   MAROMBAS BURGER – CAMADA DE DADOS
+   Usada pelo site (index.html) e pelo painel (admin.html).
+   - Com o Supabase configurado em js/config.js: lê e grava no banco.
+   - Sem configuração: MODO DEMONSTRAÇÃO, salvando no navegador.
+   ===================================================================== */
+(function(){
+  "use strict";
+
+  /* Dados iniciais (os mesmos que o banco.sql cadastra) */
+  const SEED = {
+    config: {
+      nome: "Marombas Burger",
+      whatsapp: "5569999293397",
+      telefone: "(69) 99929-3397",
+      endereco: "Rua Aruba, 8739 – Socialista",
+      cidade: "Porto Velho – RO, CEP 78910-521",
+      taxa_entrega: null,
+      horario: "Abre às 16h",
+      tempo_resposta: "15 minutos"
+    },
+    categorias: [
+      {
+        "id": "burgers",
+        "nome": "Hambúrgueres",
+        "ordem": 0,
+        "ativo": true
+      },
+      {
+        "id": "combos",
+        "nome": "Combos",
+        "ordem": 1,
+        "ativo": true
+      },
+      {
+        "id": "porcoes",
+        "nome": "Porções de batata",
+        "ordem": 2,
+        "ativo": true
+      },
+      {
+        "id": "bebidas",
+        "nome": "Bebidas",
+        "ordem": 3,
+        "ativo": true
+      },
+      {
+        "id": "adicionais",
+        "nome": "Adicionais",
+        "ordem": 4,
+        "ativo": true
+      }
+    ],
+    produtos: [
+      {
+        "id": "marombinha",
+        "cat": "burgers",
+        "nome": "Marombinha",
+        "desc": "Hambúrguer de 180g, muçarela, requeijão e cebola caramelizada.",
+        "spec": "180g",
+        "preco": 26.8,
+        "badge": "",
+        "img": "img/fotos/marombinha.webp",
+        "art": {
+          "type": "burger",
+          "patties": 1,
+          "cheese": "cheddar"
+        },
+        "ativo": true,
+        "ordem": 0
+      },
+      {
+        "id": "maromba-rib",
+        "cat": "burgers",
+        "nome": "Maromba Rib",
+        "desc": "Hambúrguer de 150g, costela desfiada, cebola caramelizada e requeijão.",
+        "spec": "150g + costela",
+        "preco": 30.0,
+        "badge": "",
+        "img": "img/fotos/maromba-rib.webp",
+        "art": {
+          "type": "burger",
+          "patties": 1,
+          "cheese": "cheddar"
+        },
+        "ativo": true,
+        "ordem": 1
+      },
+      {
+        "id": "cupim-musculoso",
+        "cat": "burgers",
+        "nome": "Cupim Musculoso",
+        "desc": "Hambúrguer artesanal com cupim desfiado.",
+        "spec": "Cupim desfiado",
+        "preco": 30.0,
+        "badge": "",
+        "img": "img/fotos/cupim-musculoso.webp",
+        "art": {
+          "type": "burger",
+          "patties": 1,
+          "cheese": "cheddar"
+        },
+        "ativo": true,
+        "ordem": 2
+      },
+      {
+        "id": "insano",
+        "cat": "burgers",
+        "nome": "Insano",
+        "desc": "2 carnes de 100g, 2x cheddar, 2x banana e 2x bacon. Uma combinação para quem tem fome de verdade!",
+        "spec": "2 × 100g",
+        "preco": 42.28,
+        "badge": "2 carnes",
+        "img": "img/fotos/insano.webp",
+        "art": {
+          "type": "burger",
+          "patties": 2,
+          "cheese": "cheddar",
+          "bacon": true
+        },
+        "ativo": true,
+        "ordem": 3
+      },
+      {
+        "id": "king-bacon",
+        "cat": "burgers",
+        "nome": "King Bacon",
+        "desc": "Hambúrguer de 100g, requeijão, molho quatro queijos e muito bacon.",
+        "spec": "100g",
+        "preco": 25.0,
+        "badge": "",
+        "img": "img/fotos/king-bacon.webp",
+        "art": {
+          "type": "burger",
+          "patties": 1,
+          "cheese": "white",
+          "bacon": true
+        },
+        "ativo": true,
+        "ordem": 4
+      },
+      {
+        "id": "pituxo",
+        "cat": "burgers",
+        "nome": "Pituxo",
+        "desc": "2 smash burgers com bastante cheddar e requeijão.",
+        "spec": "2 smash",
+        "preco": 18.0,
+        "badge": "Smash",
+        "img": "img/fotos/pituxo.webp",
+        "art": {
+          "type": "burger",
+          "patties": 1,
+          "cheese": "cheddar"
+        },
+        "ativo": true,
+        "ordem": 5
+      },
+      {
+        "id": "classic-burger",
+        "cat": "burgers",
+        "nome": "Classic Burger",
+        "desc": "",
+        "spec": "",
+        "preco": 0,
+        "badge": "",
+        "img": "img/fotos/classic-burger.webp",
+        "art": {
+          "type": "burger",
+          "patties": 1,
+          "cheese": "cheddar"
+        },
+        "ativo": false,
+        "ordem": 6
+      },
+      {
+        "id": "gym-bro",
+        "cat": "combos",
+        "nome": "Gym Bro",
+        "desc": "2 Maromba Rib ou Cupim Musculoso, Batata Iniciante e 2 refrigerantes em lata. Diga nas observações qual lanche você quer.",
+        "spec": "Para 2 pessoas",
+        "preco": 69.99,
+        "badge": "Para 2",
+        "img": "img/ilustrativas/gym-bro.webp",
+        "art": {
+          "type": "combo",
+          "burger": {
+            "patties": 1,
+            "cheese": "white",
+            "onion": "caramel"
+          }
+        },
+        "ativo": true,
+        "ordem": 0
+      },
+      {
+        "id": "marombas-love",
+        "cat": "combos",
+        "nome": "Marombas Love",
+        "desc": "2 Insanos, Batata Iniciante e 2 refrigerantes em lata.",
+        "spec": "Para 2 pessoas",
+        "preco": 90.0,
+        "badge": "Para 2",
+        "img": "img/ilustrativas/marombas-love.webp",
+        "art": {
+          "type": "combo",
+          "burger": {
+            "patties": 2,
+            "cheese": "cheddar",
+            "bacon": true
+          }
+        },
+        "ativo": true,
+        "ordem": 1
+      },
+      {
+        "id": "batata-iniciante",
+        "cat": "porcoes",
+        "nome": "Batata Iniciante",
+        "desc": "Porção de 150g de batatas.",
+        "spec": "150g",
+        "preco": 10.0,
+        "badge": "",
+        "img": "img/ilustrativas/batata-iniciante.webp",
+        "art": {
+          "type": "fries"
+        },
+        "ativo": true,
+        "ordem": 0
+      },
+      {
+        "id": "batata-bombada",
+        "cat": "porcoes",
+        "nome": "Batata Bombada",
+        "desc": "300g de batata, bacon e molho cheddar.",
+        "spec": "300g",
+        "preco": 27.0,
+        "badge": "",
+        "img": "img/ilustrativas/batata-bombada-v2.webp",
+        "art": {
+          "type": "fries",
+          "cheddar": true
+        },
+        "ativo": true,
+        "ordem": 1
+      },
+      {
+        "id": "batata-maromba",
+        "cat": "porcoes",
+        "nome": "Batata Maromba",
+        "desc": "300g de batata, costela desfiada e requeijão.",
+        "spec": "300g",
+        "preco": 32.0,
+        "badge": "",
+        "img": "img/ilustrativas/batata-maromba-v2.webp",
+        "art": {
+          "type": "fries"
+        },
+        "ativo": true,
+        "ordem": 2
+      },
+      {
+        "id": "refri-lata",
+        "cat": "bebidas",
+        "nome": "Refrigerante lata",
+        "desc": "Lata 350ml. Informe o sabor nas observações.",
+        "spec": "Lata",
+        "preco": 8.0,
+        "badge": "",
+        "img": "img/ilustrativas/refri-lata-v2.webp",
+        "art": {
+          "type": "can"
+        },
+        "ativo": true,
+        "ordem": 0
+      },
+      {
+        "id": "add-hamburguer",
+        "cat": "adicionais",
+        "nome": "Adicional de hambúrguer",
+        "desc": "",
+        "spec": "",
+        "preco": 8.0,
+        "badge": "",
+        "img": "",
+        "art": {
+          "type": "burger",
+          "patties": 1,
+          "cheese": "cheddar"
+        },
+        "ativo": true,
+        "ordem": 0
+      },
+      {
+        "id": "add-banana",
+        "cat": "adicionais",
+        "nome": "Adicional de banana",
+        "desc": "",
+        "spec": "",
+        "preco": 3.0,
+        "badge": "",
+        "img": "",
+        "art": {
+          "type": "burger",
+          "patties": 1,
+          "cheese": "cheddar"
+        },
+        "ativo": true,
+        "ordem": 1
+      },
+      {
+        "id": "add-mucarela",
+        "cat": "adicionais",
+        "nome": "Adicional de muçarela",
+        "desc": "",
+        "spec": "",
+        "preco": 2.0,
+        "badge": "",
+        "img": "",
+        "art": {
+          "type": "burger",
+          "patties": 1,
+          "cheese": "cheddar"
+        },
+        "ativo": true,
+        "ordem": 2
+      },
+      {
+        "id": "add-cheddar",
+        "cat": "adicionais",
+        "nome": "Adicional de cheddar",
+        "desc": "",
+        "spec": "",
+        "preco": 3.0,
+        "badge": "",
+        "img": "",
+        "art": {
+          "type": "burger",
+          "patties": 1,
+          "cheese": "cheddar"
+        },
+        "ativo": true,
+        "ordem": 3
+      },
+      {
+        "id": "add-requeijao",
+        "cat": "adicionais",
+        "nome": "Adicional de requeijão",
+        "desc": "",
+        "spec": "",
+        "preco": 3.0,
+        "badge": "",
+        "img": "",
+        "art": {
+          "type": "burger",
+          "patties": 1,
+          "cheese": "cheddar"
+        },
+        "ativo": true,
+        "ordem": 4
+      },
+      {
+        "id": "add-queijo-coalho",
+        "cat": "adicionais",
+        "nome": "Adicional de queijo coalho",
+        "desc": "",
+        "spec": "",
+        "preco": 3.0,
+        "badge": "",
+        "img": "",
+        "art": {
+          "type": "burger",
+          "patties": 1,
+          "cheese": "cheddar"
+        },
+        "ativo": true,
+        "ordem": 5
+      },
+      {
+        "id": "add-bacon",
+        "cat": "adicionais",
+        "nome": "Adicional de bacon",
+        "desc": "",
+        "spec": "",
+        "preco": 3.0,
+        "badge": "",
+        "img": "",
+        "art": {
+          "type": "burger",
+          "patties": 1,
+          "cheese": "cheddar"
+        },
+        "ativo": true,
+        "ordem": 6
+      }
+    ]
+  };
+
+  const SUPABASE_JS = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js";
+  const BUCKET = "produtos";
+  const DEMO_KEY = "mb-demo-db";
+  const CACHE_KEY = "mb-cache";
+
+  const cfg = window.MB_CONFIG || {};
+  const temSupabase = !!(cfg.supabaseUrl && cfg.supabaseAnonKey);
+  let sb = null;
+
+  const clone = o => JSON.parse(JSON.stringify(o));
+  const ls = {
+    get(k){ try{ return JSON.parse(localStorage.getItem(k)); }catch(e){ return null; } },
+    set(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); return true; }catch(e){ return false; } }
+  };
+
+  function carregarScript(src){
+    return new Promise((ok,erro)=>{
+      const s=document.createElement("script"); s.src=src; s.async=true;
+      s.onload=ok; s.onerror=()=>erro(new Error("Não foi possível carregar a biblioteca do banco de dados."));
+      document.head.appendChild(s);
+    });
+  }
+  const comLimite = (p,ms,msg) => Promise.race([p,new Promise((_,e)=>setTimeout(()=>e(new Error(msg)),ms))]);
+
+  let prontoP = null;
+  function pronto(){
+    if(!temSupabase) return Promise.resolve(null);
+    if(!prontoP){
+      prontoP = (window.supabase ? Promise.resolve() : carregarScript(SUPABASE_JS)).then(()=>{
+        sb = window.supabase.createClient(cfg.supabaseUrl.trim(), cfg.supabaseAnonKey.trim());
+        return sb;
+      });
+    }
+    return prontoP;
+  }
+
+  /* ---------- Conversões banco <-> app ---------- */
+  const deLinha = r => ({ id:r.id, cat:r.categoria_id, nome:r.nome, desc:r.descricao||"", spec:r.spec||"",
+    preco:Number(r.preco)||0, badge:r.badge||"", img:r.imagem_url||"", art:r.arte||{type:"burger",patties:1,cheese:"cheddar"},
+    ativo:r.ativo!==false, ordem:r.ordem||0 });
+  const paraLinha = p => ({ categoria_id:p.cat, nome:p.nome.trim(), descricao:(p.desc||"").trim()||null, spec:(p.spec||"").trim()||null,
+    preco:Math.round(Number(p.preco)*100)/100, badge:(p.badge||"").trim()||null, imagem_url:p.img||null, arte:p.art||null,
+    ativo:!!p.ativo, ordem:p.ordem||0 });
+  const ordenar = d => {
+    d.categorias.sort((a,b)=>a.ordem-b.ordem || a.nome.localeCompare(b.nome));
+    d.produtos.sort((a,b)=>a.ordem-b.ordem || a.nome.localeCompare(b.nome));
+    return d;
+  };
+  function erroAmigavel(e){
+    const m=(e&&(e.message||e.error_description))||String(e);
+    if(/Invalid login credentials/i.test(m)) return new Error("E-mail ou senha incorretos.");
+    if(/Email not confirmed/i.test(m)) return new Error("Confirme o e-mail desse usuário no Supabase (Authentication → Users).");
+    if(/row-level security|permission denied|not authorized|violates row-level/i.test(m)) return new Error("Sem permissão. Confira se este e-mail está na tabela de administradores (admins).");
+    if(/Failed to fetch|NetworkError|network/i.test(m)) return new Error("Sem conexão com o banco de dados. Verifique a internet.");
+    if(/foreign key/i.test(m)) return new Error("Essa categoria ainda tem produtos. Mova ou exclua os produtos antes.");
+    if(/Payload too large|exceeded the maximum/i.test(m)) return new Error("Imagem grande demais. Use uma foto de até 5 MB.");
+    return new Error(m);
+  }
+  const ok = ({data,error}) => { if(error) throw erroAmigavel(error); return data; };
+
+  /* ---------- Modo demonstração ---------- */
+  const demo = {
+    ler(){ const d=ls.get(DEMO_KEY); return (d&&d.produtos&&d.categorias&&d.config) ? d : clone(SEED); },
+    gravar(d){ if(!ls.set(DEMO_KEY,d)) throw new Error("O navegador não tem mais espaço para salvar. Use fotos menores ou restaure os dados de exemplo."); }
+  };
+
+  function slug(t){
+    return (t||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,40) || "item";
+  }
+  function idUnico(base, existentes){
+    let id=slug(base), n=2; const set=new Set(existentes);
+    while(set.has(id)) id=slug(base)+"-"+(n++);
+    return id;
+  }
+
+  /* ---------- Compressão de imagem no navegador ---------- */
+  function comprimir(file, max, qualidade){
+    return new Promise((res,rej)=>{
+      if(!/^image\//.test(file.type)) return rej(new Error("Escolha um arquivo de imagem (JPG, PNG ou WEBP)."));
+      const url=URL.createObjectURL(file), img=new Image();
+      img.onload=()=>{
+        const k=Math.min(1, max/Math.max(img.width,img.height));
+        const c=document.createElement("canvas"); c.width=Math.round(img.width*k); c.height=Math.round(img.height*k);
+        c.getContext("2d").drawImage(img,0,0,c.width,c.height); URL.revokeObjectURL(url);
+        const tentar=(tipo)=>new Promise(r=>c.toBlob(b=>r(b),tipo,qualidade));
+        tentar("image/webp").then(b=> (b && b.type==="image/webp") ? b : tentar("image/jpeg")).then(b=>{
+          if(!b) return rej(new Error("Não foi possível processar a imagem."));
+          res(b);
+        });
+      };
+      img.onerror=()=>{ URL.revokeObjectURL(url); rej(new Error("Não foi possível abrir essa imagem.")); };
+      img.src=url;
+    });
+  }
+  const blobParaDataURL = b => new Promise(r=>{ const f=new FileReader(); f.onload=()=>r(f.result); f.readAsDataURL(b); });
+
+  /* =====================================================================
+     API PÚBLICA: window.MB
+     ===================================================================== */
+  const MB = {
+    modo: temSupabase ? "banco" : "demo",
+    SEED: clone(SEED),
+    slug,
+
+    /** Carrega tudo. Site: só itens ativos (o banco já filtra). Painel: tudo, se logado. */
+    async carregar(){
+      if(!temSupabase) return ordenar(demo.ler());
+      try{
+        await comLimite(pronto(),10000,"O banco de dados demorou para responder.");
+        const [c,cats,prods] = await comLimite(Promise.all([
+          sb.from("configuracoes").select("*").eq("id",1).maybeSingle(),
+          sb.from("categorias").select("*"),
+          sb.from("produtos").select("*")
+        ]),10000,"O banco de dados demorou para responder.");
+        const d = ordenar({ config:{...SEED.config, ...(ok(c)||{})}, categorias:ok(cats), produtos:ok(prods).map(deLinha) });
+        ls.set(CACHE_KEY,d);
+        return d;
+      }catch(e){
+        const cache=ls.get(CACHE_KEY);
+        console.warn("[Marombas] Usando cópia salva do cardápio:", e.message);
+        if(cache) return {...ordenar(cache), offline:true};
+        throw erroAmigavel(e);
+      }
+    },
+
+    /* ---- Login ---- */
+    async sessao(){
+      if(!temSupabase) return { email:"modo demonstração", demo:true };
+      await pronto();
+      const { data } = await sb.auth.getSession();
+      return data.session ? { email:data.session.user.email } : null;
+    },
+    async entrar(email,senha){
+      if(!temSupabase) return { email:"modo demonstração", demo:true };
+      await pronto();
+      const r = await sb.auth.signInWithPassword({ email:email.trim(), password:senha });
+      if(r.error) throw erroAmigavel(r.error);
+      const adm = await sb.rpc("is_admin");
+      if(adm.error || adm.data!==true){ await sb.auth.signOut(); throw new Error("Este e-mail não tem acesso ao painel. Cadastre-o na tabela admins do banco."); }
+      return { email:r.data.user.email };
+    },
+    async sair(){ if(temSupabase){ await pronto(); await sb.auth.signOut(); } },
+    async redefinirSenha(email){
+      if(!temSupabase) return;
+      await pronto();
+      const r = await sb.auth.resetPasswordForEmail(email.trim(), { redirectTo: location.href.split("#")[0] });
+      if(r.error) throw erroAmigavel(r.error);
+    },
+
+    /* ---- Produtos ---- */
+    async salvarProduto(p){
+      if(!p.nome || !p.nome.trim()) throw new Error("Informe o nome do produto.");
+      if(!(Number(p.preco)>=0)) throw new Error("Informe um preço válido.");
+      if(!temSupabase){
+        const d=demo.ler();
+        if(!p.id){ p={...p, id:idUnico(p.nome,d.produtos.map(x=>x.id))}; d.produtos.push(p); }
+        else { const i=d.produtos.findIndex(x=>x.id===p.id); if(i<0) d.produtos.push(p); else d.produtos[i]=p; }
+        demo.gravar(d); return clone(p);
+      }
+      await pronto();
+      const linha=paraLinha(p);
+      const q = p.id ? sb.from("produtos").update({...linha, atualizado_em:new Date().toISOString()}).eq("id",p.id).select().single()
+                     : sb.from("produtos").insert({...linha, id:idUnico(p.nome,[])+"-"+Math.random().toString(36).slice(2,6)}).select().single();
+      return deLinha(ok(await q));
+    },
+    async excluirProduto(id){
+      if(!temSupabase){ const d=demo.ler(); d.produtos=d.produtos.filter(x=>x.id!==id); demo.gravar(d); return; }
+      await pronto(); ok(await sb.from("produtos").delete().eq("id",id));
+    },
+    async reordenarProdutos(lista){ // [{id, ordem}]
+      if(!temSupabase){ const d=demo.ler(); lista.forEach(({id,ordem})=>{ const p=d.produtos.find(x=>x.id===id); if(p) p.ordem=ordem; }); demo.gravar(d); return; }
+      await pronto();
+      for(const {id,ordem} of lista) ok(await sb.from("produtos").update({ordem}).eq("id",id));
+    },
+
+    /* ---- Imagens ---- */
+    async enviarImagem(file){
+      if(!temSupabase){
+        const b=await comprimir(file,640,.8);
+        return await blobParaDataURL(b);
+      }
+      await pronto();
+      const b=await comprimir(file,1200,.85);
+      const ext=b.type==="image/webp"?"webp":"jpg";
+      const caminho=`${new Date().toISOString().slice(0,10)}/${Date.now()}-${Math.random().toString(36).slice(2,8)}.${ext}`;
+      ok(await sb.storage.from(BUCKET).upload(caminho,b,{contentType:b.type,cacheControl:"31536000",upsert:false}));
+      return sb.storage.from(BUCKET).getPublicUrl(caminho).data.publicUrl;
+    },
+    async apagarImagem(url){
+      if(!temSupabase || !url || !url.includes("/storage/v1/object/public/"+BUCKET+"/")) return;
+      try{ await pronto(); const caminho=decodeURIComponent(url.split("/storage/v1/object/public/"+BUCKET+"/")[1]); await sb.storage.from(BUCKET).remove([caminho]); }catch(e){}
+    },
+
+    /* ---- Categorias ---- */
+    async salvarCategoria(c){
+      if(!c.nome || !c.nome.trim()) throw new Error("Informe o nome da categoria.");
+      if(!temSupabase){
+        const d=demo.ler();
+        if(!c.id){ c={...c, id:idUnico(c.nome,d.categorias.map(x=>x.id))}; d.categorias.push(c); }
+        else { const i=d.categorias.findIndex(x=>x.id===c.id); d.categorias[i]=c; }
+        demo.gravar(d); return clone(c);
+      }
+      await pronto();
+      const linha={nome:c.nome.trim(), ordem:c.ordem||0, ativo:c.ativo!==false};
+      const q = c.id ? sb.from("categorias").update(linha).eq("id",c.id).select().single()
+                     : sb.from("categorias").insert({...linha, id:idUnico(c.nome,[])+"-"+Math.random().toString(36).slice(2,5)}).select().single();
+      return ok(await q);
+    },
+    async excluirCategoria(id){
+      if(!temSupabase){
+        const d=demo.ler();
+        if(d.produtos.some(p=>p.cat===id)) throw new Error("Essa categoria ainda tem produtos. Mova ou exclua os produtos antes.");
+        d.categorias=d.categorias.filter(x=>x.id!==id); demo.gravar(d); return;
+      }
+      await pronto(); ok(await sb.from("categorias").delete().eq("id",id));
+    },
+    async reordenarCategorias(lista){
+      if(!temSupabase){ const d=demo.ler(); lista.forEach(({id,ordem})=>{ const c=d.categorias.find(x=>x.id===id); if(c) c.ordem=ordem; }); demo.gravar(d); return; }
+      await pronto();
+      for(const {id,ordem} of lista) ok(await sb.from("categorias").update({ordem}).eq("id",id));
+    },
+
+    /* ---- Configurações da loja ---- */
+    async salvarConfig(c){
+      const limpo={ nome:(c.nome||"").trim()||"Marombas Burger", whatsapp:(c.whatsapp||"").replace(/\D/g,""),
+        telefone:(c.telefone||"").trim(), endereco:(c.endereco||"").trim(), cidade:(c.cidade||"").trim(),
+        taxa_entrega:null,   // taxa informada pelo WhatsApp
+        horario:(c.horario||"").trim(), tempo_resposta:(c.tempo_resposta||"").trim() };
+      if(limpo.whatsapp.length<12) throw new Error("WhatsApp inválido. Use 55 + DDD + número, ex.: 5569999293397.");
+      if(!temSupabase){ const d=demo.ler(); d.config=limpo; demo.gravar(d); return limpo; }
+      await pronto();
+      ok(await sb.from("configuracoes").upsert({id:1, ...limpo, atualizado_em:new Date().toISOString()}));
+      return limpo;
+    },
+
+    /* ---- Demonstração ---- */
+    restaurarDemo(){ try{ localStorage.removeItem(DEMO_KEY); }catch(e){} }
+  };
+
+  window.MB = MB;
+})();
+
+</script>
+<script>
+(function(){
+"use strict";
+if(!window.MB || typeof window.art!=="function"){
+  document.querySelector("main").innerHTML='<div class="banner offline" style="margin-top:24px"><p><b>Arquivos do painel não encontrados.</b> Descompacte a pasta <b>marombas-burger</b> inteira do zip e abra o admin.html que está dentro dela.</p></div>';
+  return;
+}
+if(window.MB_EMBED){
+  document.querySelectorAll('a[href="index.html"]').forEach(a=>{ a.removeAttribute("target"); a.addEventListener("click",e=>{ e.preventDefault(); location.reload(); }); });
+}
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const money=n=>"R$ "+Number(n||0).toFixed(2).replace(".",",");
+const parsePreco=v=>{ v=String(v||"").trim().replace(/\s|R\$/g,""); if(v.includes(",")) v=v.replace(/\./g,"").replace(",","."); const n=Number(v); return isFinite(n)&&v!==""?n:NaN; };
+const fmtPreco=n=>isFinite(n)?Number(n).toFixed(2).replace(".",","):"";
+
+/* Ilustrações prontas para o seletor */
+const ARTES={
+  "burger":{type:"burger",patties:1,cheese:"white",lettuce:true,tomato:true},
+  "burger2":{type:"burger",patties:2,cheese:"cheddar",bacon:true,onion:true},
+  "burger3":{type:"burger",patties:3,cheese:"cheddar",bacon:true},
+  "chicken":{type:"burger",patties:1,chicken:true,cheese:"white",lettuce:true,tomato:true},
+  "combo":{type:"combo",burger:{patties:1,cheese:"white",lettuce:true,tomato:true}},
+  "fries":{type:"fries"}, "fries-cheddar":{type:"fries",cheddar:true}, "rings":{type:"rings"},
+  "acai":{type:"acai"}, "acai-morango":{type:"acai",strawberry:true},
+  "can":{type:"can"}, "bottle":{type:"bottle"}, "juice":{type:"juice"}, "water":{type:"water"}
+};
+function arteKey(a){
+  if(!a) return "burger";
+  if(a.type==="burger"){ if(a.chicken) return "chicken"; if(a.patties>=3) return "burger3"; if(a.patties===2||a.bacon) return "burger2"; return "burger"; }
+  if(a.type==="fries") return a.cheddar?"fries-cheddar":"fries";
+  if(a.type==="acai") return a.strawberry?"acai-morango":"acai";
+  return ARTES[a.type]?a.type:"burger";
+}
+const PADRAO_CAT={burgers:"burger",combos:"combo",porcoes:"fries",acai:"acai",bebidas:"can"};
+const thumb=p=>p.img?`<img src="${esc(p.img)}" alt="" loading="lazy">`:`<span class="nofoto">Sem foto</span>`;
+
+let D={config:{},categorias:[],produtos:[]};
+let tabAtual="produtos";
+
+/* ---------- Avisos ---------- */
+let tT;
+function toast(msg,bad){ const t=$("#toast"); t.textContent=msg; t.classList.toggle("bad",!!bad); t.classList.add("show"); clearTimeout(tT); tT=setTimeout(()=>t.classList.remove("show"),bad?4200:2000); }
+async function acao(btn,fn,okMsg){
+  const txt=btn&&btn.innerHTML; if(btn){ btn.disabled=true; }
+  try{ const r=await fn(); if(okMsg) toast(okMsg); return r; }
+  catch(e){ toast(e.message||"Algo deu errado. Tente de novo.",true); throw e; }
+  finally{ if(btn){ btn.disabled=false; btn.innerHTML=txt; } }
+}
+
+/* ---------- Início ---------- */
+$("#modeChip").textContent = MB.modo==="demo" ? "Demonstração" : "Banco conectado";
+$("#modeChip").classList.add(MB.modo);
+$("#demoBanner").hidden = MB.modo!=="demo";
+
+async function iniciar(){
+  let s=null;
+  try{ s=await MB.sessao(); }catch(e){ toast(e.message,true); }
+  if(!s){ mostrarLogin(); return; }
+  await entrarNoApp(s);
+}
+function mostrarLogin(){ $("#appView").hidden=true; $("#loginView").hidden=false; $("#logoutBtn").hidden=true; $("#who").hidden=true; setTimeout(()=>$("#lEmail").focus(),50); }
+async function entrarNoApp(s){
+  $("#loginView").hidden=true; $("#appView").hidden=false;
+  $("#logoutBtn").hidden=!!s.demo; $("#who").hidden=!!s.demo; $("#who").textContent=s.email;
+  await recarregar();
+}
+async function recarregar(){
+  try{ D=await MB.carregar(); }
+  catch(e){ $("#prodList").innerHTML=`<div class="empty">${esc(e.message)}</div>`; return; }
+  $("#offlineBanner").hidden=!D.offline;
+  renderTudo();
+}
+function renderTudo(){ renderFiltroCat(); renderProdutos(); renderCategorias(); renderLoja(); }
+
+/* ---------- Login ---------- */
+$("#loginForm").addEventListener("submit",async e=>{
+  e.preventDefault(); $("#loginErr").textContent="";
+  const email=$("#lEmail").value, senha=$("#lSenha").value;
+  if(!email||!senha){ $("#loginErr").textContent="Preencha e-mail e senha."; return; }
+  const b=$("#loginBtn"); b.disabled=true; b.textContent="Entrando…";
+  try{ const s=await MB.entrar(email,senha); $("#lSenha").value=""; await entrarNoApp(s); }
+  catch(err){ $("#loginErr").textContent=err.message; }
+  finally{ b.disabled=false; b.textContent="Entrar"; }
+});
+$("#forgotBtn").addEventListener("click",async()=>{
+  const email=$("#lEmail").value.trim();
+  if(!email){ $("#loginErr").textContent="Digite seu e-mail acima e toque de novo em “Esqueci minha senha”."; $("#lEmail").focus(); return; }
+  try{ await MB.redefinirSenha(email); $("#loginErr").textContent=""; toast("Enviamos um link de nova senha para "+email); }
+  catch(err){ $("#loginErr").textContent=err.message; }
+});
+$("#logoutBtn").addEventListener("click",async()=>{ await MB.sair(); mostrarLogin(); });
+$("#resetDemo").addEventListener("click",async e=>{
+  const b=e.currentTarget;
+  if(!b.classList.contains("armed")){ b.classList.add("armed","btn-danger"); b.textContent="Toque de novo para confirmar"; setTimeout(()=>{ b.classList.remove("armed","btn-danger"); b.textContent="Restaurar exemplos"; },4000); return; }
+  MB.restaurarDemo(); b.classList.remove("armed","btn-danger"); b.textContent="Restaurar exemplos"; await recarregar(); toast("Exemplos restaurados");
+});
+
+/* ---------- Abas ---------- */
+$$(".tab").forEach(t=>t.addEventListener("click",()=>{
+  tabAtual=t.id.replace("tab-","");
+  $$(".tab").forEach(x=>x.setAttribute("aria-selected",x===t));
+  $$(".panel").forEach(p=>p.hidden=p.id!=="p-"+tabAtual);
+}));
+
+/* ---------- Produtos ---------- */
+function renderFiltroCat(){
+  const v=$("#fCat").value;
+  $("#fCat").innerHTML=`<option value="">Todas as categorias</option>`+D.categorias.map(c=>`<option value="${esc(c.id)}">${esc(c.nome)}</option>`).join("");
+  $("#fCat").value=D.categorias.some(c=>c.id===v)?v:"";
+  $("#pCat").innerHTML=D.categorias.map(c=>`<option value="${esc(c.id)}">${esc(c.nome)}${c.ativo===false?" (oculta)":""}</option>`).join("");
+}
+function renderProdutos(){
+  const busca=$("#fBusca").value.trim().toLowerCase(), fc=$("#fCat").value;
+  const total=D.produtos.length, esg=D.produtos.filter(p=>!p.ativo).length, fotos=D.produtos.filter(p=>p.img).length;
+  $("#tProdCount").textContent=total; $("#tCatCount").textContent=D.categorias.length;
+  $("#stats").innerHTML=`<span><b class="num">${total}</b> produtos</span><span><b class="num">${total-esg}</b> disponíveis</span><span><b class="num">${esg}</b> esgotados/ocultos</span><span><b class="num">${fotos}</b> com foto</span>`;
+  const cats=D.categorias.filter(c=>!fc||c.id===fc);
+  const semCat=D.produtos.filter(p=>!D.categorias.some(c=>c.id===p.cat));
+  let html="";
+  const grupo=(titulo,lista,c)=>{
+    const filt=lista.filter(p=>!busca||(p.nome+" "+p.desc+" "+p.spec).toLowerCase().includes(busca));
+    if(!filt.length && (busca||!c)) return "";
+    return `<div class="group"><div class="group-head"><h2>${esc(titulo)}</h2><span>${filt.length} ${filt.length===1?"item":"itens"}</span>${c&&c.ativo===false?'<span class="hidden-tag">· oculta no site</span>':""}</div>`+
+      (filt.length?filt.map((p)=>{
+        const idx=lista.indexOf(p);
+        return `<div class="row${p.ativo?"":" off"}">
+          <div class="thumb">${thumb(p)}</div>
+          <div class="row-info"><b>${esc(p.nome)}</b>
+            <div class="meta"><span class="price num">${money(p.preco)}</span>${p.spec?`<span>${esc(p.spec)}</span>`:""}${p.badge?`<span class="tag">${esc(p.badge)}</span>`:""}${p.img?'<span class="tag photo">Foto</span>':""}${p.ativo?"":'<span class="tag out">Esgotado</span>'}</div>
+          </div>
+          <div class="row-actions">
+            <label class="switch" title="Disponível no cardápio"><input type="checkbox" data-toggle="${esc(p.id)}" ${p.ativo?"checked":""} aria-label="${esc(p.nome)} disponível"><span class="track"></span></label>
+            <span class="order">${busca?"":`<button class="icon-btn" data-move="${esc(p.id)}" data-dir="-1" aria-label="Subir ${esc(p.nome)}" ${idx===0?"disabled":""}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 15 6-6 6 6"/></svg></button><button class="icon-btn" data-move="${esc(p.id)}" data-dir="1" aria-label="Descer ${esc(p.nome)}" ${idx===lista.length-1?"disabled":""}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>`}</span>
+            <button class="btn btn-ghost btn-sm" data-edit="${esc(p.id)}">Editar</button>
+          </div></div>`;}).join("") : `<div class="empty" style="margin-top:8px;padding:18px">Nenhum produto nesta categoria.</div>`)+`</div>`;
+  };
+  cats.forEach(c=>{ html+=grupo(c.nome,D.produtos.filter(p=>p.cat===c.id),c); });
+  if(!fc && semCat.length) html+=grupo("Sem categoria",semCat,null);
+  $("#prodList").innerHTML = html || `<div class="empty">Nenhum produto encontrado${busca?` para “${esc(busca)}”`:""}.</div>`;
+}
+$("#fBusca").addEventListener("input",renderProdutos);
+$("#fCat").addEventListener("change",renderProdutos);
+
+$("#prodList").addEventListener("change",async e=>{
+  const id=e.target.dataset.toggle; if(!id) return;
+  const p=D.produtos.find(x=>x.id===id); const novo=e.target.checked;
+  try{ const s=await acao(null,()=>MB.salvarProduto({...p,ativo:novo}),novo?`${p.nome} disponível`:`${p.nome} marcado como esgotado`); Object.assign(p,s); }
+  catch(err){ e.target.checked=!novo; return; }
+  renderProdutos();
+});
+$("#prodList").addEventListener("click",async e=>{
+  const ed=e.target.closest("[data-edit]"); if(ed){ abrirEditor(D.produtos.find(x=>x.id===ed.dataset.edit)); return; }
+  const mv=e.target.closest("[data-move]"); if(!mv) return;
+  const p=D.produtos.find(x=>x.id===mv.dataset.move), lista=D.produtos.filter(x=>x.cat===p.cat);
+  const i=lista.indexOf(p), j=i+Number(mv.dataset.dir); if(j<0||j>=lista.length) return;
+  [lista[i],lista[j]]=[lista[j],lista[i]];
+  const mud=lista.map((x,k)=>({id:x.id,ordem:k}));
+  try{ await acao(mv,()=>MB.reordenarProdutos(mud)); mud.forEach(({id,ordem})=>{ D.produtos.find(x=>x.id===id).ordem=ordem; }); D.produtos.sort((a,b)=>a.ordem-b.ordem); renderProdutos();
+       const btn=$(`[data-move="${CSS.escape(p.id)}"][data-dir="${mv.dataset.dir}"]`)||$(`[data-move="${CSS.escape(p.id)}"]`); if(btn&&!btn.disabled) btn.focus(); }catch(err){}
+});
+
+/* ---------- Editor ---------- */
+let editando=null, fotoAtual="", fotoOriginal="", fotosEnviadas=[], lastFocus=null;
+function previewFoto(){
+  const arte=ARTES[$("#pArte").value];
+  $("#photoPreview").innerHTML = fotoAtual?`<img src="${esc(fotoAtual)}" alt="Foto do produto">`:`<span class="nofoto">Sem foto<br><small>toque para enviar</small></span>`;
+  $("#photoRemove").hidden=!fotoAtual; $("#arteWrap").hidden=true;
+  $("#photoPick").textContent=fotoAtual?"Trocar foto":"Escolher foto";
+}
+function abrirEditor(p){
+  editando=p?{...p}:null; lastFocus=document.activeElement;
+  $("#sheetTitle").textContent=p?"Editar produto":"Novo produto";
+  const catPadrao=$("#fCat").value||(D.categorias[0]&&D.categorias[0].id)||"";
+  $("#pNome").value=p?p.nome:""; $("#pCat").value=p?p.cat:catPadrao; $("#pPreco").value=p?fmtPreco(p.preco):"";
+  $("#pSpec").value=p?p.spec:""; $("#pDesc").value=p?p.desc:""; $("#pBadge").value=p?p.badge:"";
+  $("#pAtivo").checked=p?p.ativo:true; atualizaAtivoTxt();
+  $("#pArte").value=p?arteKey(p.art):(PADRAO_CAT[catPadrao]||"burger");
+  fotoAtual=fotoOriginal=p?p.img:""; fotosEnviadas=[];
+  $("#prodErr").textContent=""; $("#prodDelete").hidden=!p; desarmar();
+  previewFoto();
+  $("#sheet").classList.add("open"); $("#overlay").classList.add("open"); $("#sheet").setAttribute("aria-hidden","false");
+  document.body.style.overflow="hidden"; setTimeout(()=>$("#pNome").focus(),80);
+}
+function fecharEditor(salvou){
+  if(!salvou) fotosEnviadas.forEach(u=>MB.apagarImagem(u)); // descarta fotos enviadas e não usadas
+  $("#sheet").classList.remove("open"); $("#overlay").classList.remove("open"); $("#sheet").setAttribute("aria-hidden","true");
+  document.body.style.overflow=""; editando=null; if(lastFocus&&document.contains(lastFocus)) lastFocus.focus();
+}
+function atualizaAtivoTxt(){ $("#pAtivoTxt").textContent=$("#pAtivo").checked?"Disponível no cardápio":"Esgotado (não aparece no site)"; }
+$("#pAtivo").addEventListener("change",atualizaAtivoTxt);
+$("#pArte").addEventListener("change",previewFoto);
+$("#pCat").addEventListener("change",()=>{ if(!editando && !fotoAtual) { $("#pArte").value=PADRAO_CAT[$("#pCat").value]||$("#pArte").value; previewFoto(); } });
+$("#newProd").addEventListener("click",()=>{ if(!D.categorias.length){ toast("Crie uma categoria antes de cadastrar produtos.",true); return; } abrirEditor(null); });
+$("#sheetClose").addEventListener("click",()=>fecharEditor(false));
+$("#prodCancel").addEventListener("click",()=>fecharEditor(false));
+$("#overlay").addEventListener("click",()=>fecharEditor(false));
+document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&$("#sheet").classList.contains("open")) fecharEditor(false); });
+
+/* Foto */
+async function enviarFoto(file){
+  if(!file) return;
+  if(file.size>15*1024*1024){ toast("Essa imagem é muito grande (máx. 15 MB).",true); return; }
+  $("#photoBusy").hidden=false;
+  try{ const url=await MB.enviarImagem(file); fotosEnviadas.push(url); fotoAtual=url; previewFoto(); toast("Foto carregada. Toque em Salvar para confirmar."); }
+  catch(e){ toast(e.message,true); }
+  finally{ $("#photoBusy").hidden=true; $("#photoInput").value=""; }
+}
+$("#photoPick").addEventListener("click",()=>$("#photoInput").click());
+$("#photoBox").addEventListener("click",()=>$("#photoInput").click());
+$("#photoBox").addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); $("#photoInput").click(); } });
+$("#photoInput").addEventListener("change",e=>enviarFoto(e.target.files[0]));
+["dragenter","dragover"].forEach(ev=>$("#photoBox").addEventListener(ev,e=>{ e.preventDefault(); $("#photoBox").classList.add("drag"); }));
+["dragleave","drop"].forEach(ev=>$("#photoBox").addEventListener(ev,e=>{ e.preventDefault(); $("#photoBox").classList.remove("drag"); }));
+$("#photoBox").addEventListener("drop",e=>enviarFoto(e.dataTransfer.files[0]));
+$("#photoRemove").addEventListener("click",()=>{ fotoAtual=""; previewFoto(); });
+
+/* Salvar */
+$("#prodForm").addEventListener("submit",async e=>{
+  e.preventDefault(); $("#prodErr").textContent="";
+  const preco=parsePreco($("#pPreco").value);
+  const nome=$("#pNome").value.trim();
+  if(!nome){ $("#prodErr").textContent="Informe o nome do produto."; $("#pNome").focus(); return; }
+  if(!isFinite(preco)||preco<0){ $("#prodErr").textContent="Informe um preço válido, por exemplo 22,90."; $("#pPreco").focus(); return; }
+  const cat=$("#pCat").value;
+  const p={ ...(editando||{}), nome, cat, preco, spec:$("#pSpec").value.trim(), desc:$("#pDesc").value.trim(),
+    badge:$("#pBadge").value.trim(), ativo:$("#pAtivo").checked, img:fotoAtual, art:ARTES[$("#pArte").value] };
+  if(!editando||editando.cat!==cat) p.ordem=D.produtos.filter(x=>x.cat===cat&&x.id!==p.id).length;
+  const b=$("#prodSave"); b.disabled=true; b.textContent="Salvando…";
+  const eraEdicao=!!editando;
+  try{
+    const s=await MB.salvarProduto(p);
+    const i=D.produtos.findIndex(x=>x.id===s.id); if(i<0) D.produtos.push(s); else D.produtos[i]=s;
+    D.produtos.sort((a,b)=>a.ordem-b.ordem);
+    fotosEnviadas.filter(u=>u!==s.img).forEach(u=>MB.apagarImagem(u));
+    if(fotoOriginal && fotoOriginal!==s.img) MB.apagarImagem(fotoOriginal);
+    fotosEnviadas=[]; fecharEditor(true); renderProdutos(); toast(eraEdicao?"Produto salvo":"Produto cadastrado");
+  }catch(err){ $("#prodErr").textContent=err.message; }
+  finally{ b.disabled=false; b.textContent="Salvar"; }
+});
+
+/* Excluir (confirmação no próprio botão) */
+let armT;
+function desarmar(){ const b=$("#prodDelete"); b.classList.remove("armed"); b.textContent="Excluir"; clearTimeout(armT); }
+$("#prodDelete").addEventListener("click",async()=>{
+  const b=$("#prodDelete");
+  if(!b.classList.contains("armed")){ b.classList.add("armed"); b.textContent="Confirmar exclusão"; armT=setTimeout(desarmar,4000); return; }
+  const p=editando; if(!p) return;
+  try{ await acao(b,()=>MB.excluirProduto(p.id),`${p.nome} excluído`); }catch(e){ desarmar(); return; }
+  if(p.img) MB.apagarImagem(p.img);
+  D.produtos=D.produtos.filter(x=>x.id!==p.id); fecharEditor(true); renderProdutos();
+});
+
+/* ---------- Categorias ---------- */
+function renderCategorias(){
+  $("#catList").innerHTML = D.categorias.length ? D.categorias.map((c,i)=>{
+    const n=D.produtos.filter(p=>p.cat===c.id).length;
+    return `<div class="cat-row" data-cat="${esc(c.id)}">
+      <span class="order"><button class="icon-btn" data-cmove="${esc(c.id)}" data-dir="-1" aria-label="Subir ${esc(c.nome)}" ${i===0?"disabled":""}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 15 6-6 6 6"/></svg></button><button class="icon-btn" data-cmove="${esc(c.id)}" data-dir="1" aria-label="Descer ${esc(c.nome)}" ${i===D.categorias.length-1?"disabled":""}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button></span>
+      <input class="input" value="${esc(c.nome)}" data-cname="${esc(c.id)}" aria-label="Nome da categoria" maxlength="30">
+      <div class="right">
+        <span class="count">${n} ${n===1?"produto":"produtos"}</span>
+        <label class="switch"><input type="checkbox" data-cvis="${esc(c.id)}" ${c.ativo!==false?"checked":""}><span class="track"></span><span class="txt">${c.ativo!==false?"Visível":"Oculta"}</span></label>
+        <button class="btn btn-danger btn-sm" data-cdel="${esc(c.id)}">Excluir</button>
+      </div></div>`;
+  }).join("") : `<div class="empty">Nenhuma categoria ainda. Adicione a primeira abaixo.</div>`;
+}
+$("#catList").addEventListener("change",async e=>{
+  const t=e.target, id=t.dataset.cname||t.dataset.cvis; if(!id) return;
+  const c=D.categorias.find(x=>x.id===id);
+  const novo={...c};
+  if(t.dataset.cname){ const v=t.value.trim(); if(!v||v===c.nome){ t.value=c.nome; return; } novo.nome=v; }
+  else novo.ativo=t.checked;
+  try{ const s=await acao(null,()=>MB.salvarCategoria(novo),t.dataset.cname?"Categoria renomeada":(novo.ativo?"Categoria visível no site":"Categoria oculta no site")); Object.assign(c,s); }
+  catch(err){ if(t.dataset.cname) t.value=c.nome; else t.checked=!t.checked; }
+  renderCategorias(); renderFiltroCat(); renderProdutos();
+});
+$("#catList").addEventListener("click",async e=>{
+  const del=e.target.closest("[data-cdel]");
+  if(del){
+    if(!del.classList.contains("armed")){ del.classList.add("armed"); del.textContent="Confirmar"; setTimeout(()=>{ if(document.contains(del)){ del.classList.remove("armed"); del.textContent="Excluir"; } },4000); return; }
+    const id=del.dataset.cdel;
+    try{ await acao(del,()=>MB.excluirCategoria(id),"Categoria excluída"); D.categorias=D.categorias.filter(x=>x.id!==id); }catch(err){ del.classList.remove("armed"); del.textContent="Excluir"; return; }
+    renderTudo(); return;
+  }
+  const mv=e.target.closest("[data-cmove]"); if(!mv) return;
+  const i=D.categorias.findIndex(x=>x.id===mv.dataset.cmove), j=i+Number(mv.dataset.dir);
+  if(j<0||j>=D.categorias.length) return;
+  const lista=[...D.categorias]; [lista[i],lista[j]]=[lista[j],lista[i]];
+  const mud=lista.map((x,k)=>({id:x.id,ordem:k}));
+  try{ await acao(mv,()=>MB.reordenarCategorias(mud)); lista.forEach((x,k)=>x.ordem=k); D.categorias=lista; renderCategorias(); renderFiltroCat(); renderProdutos(); }catch(err){}
+});
+$("#addCat").addEventListener("submit",async e=>{
+  e.preventDefault(); const nome=$("#newCatName").value.trim();
+  if(!nome){ toast("Digite o nome da categoria.",true); $("#newCatName").focus(); return; }
+  try{ const c=await acao(e.submitter,()=>MB.salvarCategoria({nome,ordem:D.categorias.length,ativo:true}),`Categoria ${nome} criada`); D.categorias.push(c); $("#newCatName").value=""; renderTudo(); }catch(err){}
+});
+
+/* ---------- Dados da loja ---------- */
+function renderLoja(){
+  const c=D.config;
+  $("#cNome").value=c.nome||""; $("#cWhats").value=c.whatsapp||""; $("#cTel").value=c.telefone||"";
+  $("#cEnd").value=c.endereco||""; $("#cCid").value=c.cidade||""; $("#cHor").value=c.horario||"";
+  $("#cResp").value=c.tempo_resposta||"";
+}
+$("#lojaForm").addEventListener("submit",async e=>{
+  e.preventDefault(); $("#lojaErr").textContent="";
+  const taxa=null;
+  const novo={ nome:$("#cNome").value, whatsapp:$("#cWhats").value, telefone:$("#cTel").value, endereco:$("#cEnd").value, cidade:$("#cCid").value, horario:$("#cHor").value, taxa_entrega:taxa,
+    tempo_resposta:$("#cResp").value };
+  try{ D.config=await acao($("#lojaSave"),()=>MB.salvarConfig(novo),"Dados da loja salvos"); renderLoja(); }
+  catch(err){ $("#lojaErr").textContent=err.message; }
+});
+
+iniciar();
+})();
+</script>
+</body>
+</html>
