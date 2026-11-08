@@ -218,6 +218,8 @@ h1,h2,h3{font-family:var(--f-display);text-transform:uppercase;line-height:.92;l
 .tag-hot{position:absolute;left:2%;bottom:10%;background:var(--red);color:var(--white);font-family:var(--f-display);font-weight:900;text-transform:uppercase;font-size:clamp(1rem,2.6vw,1.4rem);line-height:1;padding:.55em .8em;border-radius:6px;transform:rotate(-6deg);box-shadow:0 10px 30px var(--shade)}
 .tag-hot small{display:block;font-family:var(--f-label);font-weight:600;letter-spacing:.1em;font-size:.6em;color:var(--yellow);margin-bottom:.25em}
 @keyframes float{50%{transform:translateY(-12px) rotate(-1.5deg)}}
+/* Insano de verdade (recortado) no lugar do desenho */
+.hero-art .burger-real{inset:auto;left:7%;top:9%;width:84%;height:auto;filter:drop-shadow(0 26px 30px rgba(0,0,0,.65)) drop-shadow(0 0 22px rgba(255,61,61,.28));transform-origin:50% 80%;will-change:transform}
 @keyframes spin{to{transform:rotate(360deg)}}
 @media (max-width:960px){
   .hero .wrap{grid-template-columns:1.15fr .85fr;padding-block:40px}
@@ -800,7 +802,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
         <i style="--x:40%;--d:3.9s;--dl:-3s;--s:3px;--dx:22px"></i>
         <i style="--x:60%;--d:3.1s;--dl:-.3s;--s:2px;--dx:-6px"></i>
       </div>
-      <div id="heroBurger"></div>
+      <img class="burger burger-real" src="img/fotos/insano-recorte.webp" alt="" width="760" height="781" fetchpriority="high" decoding="async">
       <svg class="stamp" viewBox="0 0 200 200"><defs><path id="circ" d="M100 100 m-74 0 a74 74 0 1 1 148 0 a74 74 0 1 1 -148 0"/></defs><circle cx="100" cy="100" r="96" fill="#a50100"/><circle cx="100" cy="100" r="54" fill="#100080"/><text font-family="Barlow Condensed, Arial Narrow, sans-serif" font-weight="700" font-size="19" letter-spacing="3.2" fill="#ffffff"><textPath href="#circ">ARTESANAL • FEITO NA HORA • PORTO VELHO • </textPath></text><text x="100" y="96" text-anchor="middle" font-family="Big Shoulders Display, Impact, sans-serif" font-weight="900" font-size="30" fill="#ffffff">100%</text><text x="100" y="120" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="15" letter-spacing="2" fill="#ffffff">SABOR</text></svg>
       <div class="tag-hot"><small>Destaque da casa</small>Insano</div>
     </div>
@@ -2391,7 +2393,7 @@ function aplicarLoja(){
 $("#year").textContent=new Date().getFullYear();
 
 /* Arte do hero e do "Sobre" */
-$("#heroBurger").outerHTML=`<svg class="burger" viewBox="0 0 200 170">${burgerG({patties:2,cheese:"cheddar",bacon:true,onion:true,lettuce:true})}</svg>`;
+
 $("#aboutArt").innerHTML=`<svg viewBox="0 0 440 240"><rect x="20" y="112" width="400" height="16" rx="8" fill="#5a5345"/><rect x="20" y="114" width="400" height="4" rx="2" fill="#8a826f"/>
 <g><rect x="34" y="40" width="40" height="160" rx="10" fill="#a50100"/><rect x="80" y="60" width="30" height="120" rx="8" fill="#4a3aa0"/><rect x="366" y="40" width="40" height="160" rx="10" fill="#a50100"/><rect x="330" y="60" width="30" height="120" rx="8" fill="#4a3aa0"/>
 <text x="54" y="126" text-anchor="middle" font-family="Big Shoulders Display, Impact, sans-serif" font-weight="900" font-size="16" fill="#ffffff" transform="rotate(-90 54 120)">20 KG</text>
