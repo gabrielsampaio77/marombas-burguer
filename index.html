@@ -41,7 +41,7 @@
    "image": "https://marombas-burguer.vercel.app/og-image.jpg",
    "logo": "https://marombas-burguer.vercel.app/icone-512.png",
    "description": "Hamburgueria artesanal com tema fitness no bairro Socialista, em Porto Velho (RO). Hambúrgueres, combos e porções de batata, com entrega em toda Porto Velho e pedido pelo WhatsApp.",
-   "telephone": "+55 69 99248-2689",
+   "telephone": "+55 69 99929-3397",
    "servesCuisine": ["Hambúrguer artesanal", "Lanches"],
    "priceRange": "R$ 2 – R$ 90",
    "address": {
@@ -969,7 +969,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
       <div class="info">
         <dl>
           <div><dt data-cfg="nome">Marombas Burger</dt><dd><span data-cfg="endereco">Rua Aruba, 8739 – Socialista</span><br><span data-cfg="cidade">Porto Velho – RO, CEP 78910-521</span></dd></div>
-          <div><dt>Telefone / WhatsApp</dt><dd class="num" data-cfg="telefone">(69) 99248-2689</dd></div>
+          <div><dt>Telefone / WhatsApp</dt><dd class="num" data-cfg="telefone">(69) 99929-3397</dd></div>
           <div><dt>Horário</dt><dd class="big" data-cfg="horario">Abre às 16h</dd></div>
         </dl>
         <div class="actions">
@@ -1016,7 +1016,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
       </div>
       <div>
         <h5>Contato</h5>
-        <ul><li><a class="wa-generic" href="#" target="_blank" rel="noopener">WhatsApp: <span data-cfg="telefone">(69) 99248-2689</span></a></li><li data-cfg="horario">Abre às 16h</li><li><a href="admin.html">Área do lojista</a></li></ul>
+        <ul><li><a class="wa-generic" href="#" target="_blank" rel="noopener">WhatsApp: <span data-cfg="telefone">(69) 99929-3397</span></a></li><li data-cfg="horario">Abre às 16h</li><li><a href="admin.html">Área do lojista</a></li></ul>
       </div>
     </div>
     <div class="copy"><span>© <span id="year">2026</span> Marombas Burger. Todos os direitos reservados.</span><span><a href="privacidade.html">Privacidade</a> · Pedidos confirmados pelo WhatsApp.</span></div>
@@ -1112,7 +1112,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
     </a>
     <div class="sent-note" id="sentNote" hidden>
       Confira a mensagem no WhatsApp e toque em enviar. A Marombas Burger confirma seu pedido por lá.
-      Se o WhatsApp não abriu, <button type="button" id="copyMsg">copie a mensagem</button> e mande para <span data-cfg="telefone">(69) 99248-2689</span>.
+      Se o WhatsApp não abriu, <button type="button" id="copyMsg">copie a mensagem</button> e mande para <span data-cfg="telefone">(69) 99929-3397</span>.
     </div>
   </div>
 </aside>
@@ -1250,8 +1250,8 @@ function art(a, label){
   const SEED = {
     config: {
       nome: "Marombas Burger",
-      whatsapp: "5569992482689",
-      telefone: "(69) 99248-2689",
+      whatsapp: "5569999293397",
+      telefone: "(69) 99929-3397",
       endereco: "Rua Aruba, 8739 – Socialista",
       cidade: "Porto Velho – RO, CEP 78910-521",
       taxa_entrega: null,
@@ -1871,7 +1871,7 @@ function art(a, label){
         telefone:(c.telefone||"").trim(), endereco:(c.endereco||"").trim(), cidade:(c.cidade||"").trim(),
         taxa_entrega:null,   // taxa informada pelo WhatsApp
         horario:(c.horario||"").trim(), tempo_resposta:(c.tempo_resposta||"").trim() };
-      if(limpo.whatsapp.length<12) throw new Error("WhatsApp inválido. Use 55 + DDD + número, ex.: 5569992482689.");
+      if(limpo.whatsapp.length<12) throw new Error("WhatsApp inválido. Use 55 + DDD + número, ex.: 5569999293397.");
       if(!temSupabase){ const d=demo.ler(); d.config=limpo; demo.gravar(d); return limpo; }
       await pronto();
       ok(await sb.from("configuracoes").upsert({id:1, ...limpo, atualizado_em:new Date().toISOString()}));
@@ -2046,7 +2046,7 @@ function art(a, label){
    Vêm do banco de dados (painel administrativo: admin.html).
    Sem banco configurado, usa os exemplos de js/dados.js.
    ===================================================================== */
-let LOJA = { nome:"Marombas Burger", whatsapp:"5569992482689", telefone:"(69) 99248-2689",
+let LOJA = { nome:"Marombas Burger", whatsapp:"5569999293397", telefone:"(69) 99929-3397",
   endereco:"Rua Aruba, 8739 – Socialista", cidade:"Porto Velho – RO, CEP 78910-521", horario:"Abre às 16h", tempo_resposta:"15 minutos" };
 let CATEGORIAS = [], PRODUTOS = [];
 
