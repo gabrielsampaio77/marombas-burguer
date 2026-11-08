@@ -1775,6 +1775,13 @@ function art(a, label){
       if(adm.error || adm.data!==true){ await sb.auth.signOut(); throw new Error("Este e-mail não tem acesso ao painel. Cadastre-o na tabela admins do banco."); }
       return { email:r.data.user.email };
     },
+    async trocarSenha(nova){
+      if(!temSupabase) throw new Error("No modo demonstração não há senha.");
+      if(!nova || nova.length<8) throw new Error("A senha precisa ter pelo menos 8 caracteres.");
+      await pronto();
+      const r=await sb.auth.updateUser({ password:nova });
+      if(r.error){ if(/same|different from the old/i.test(r.error.message)) throw new Error("Use uma senha diferente da atual."); throw erroAmigavel(r.error); }
+    },
     async sair(){ if(temSupabase){ await pronto(); await sb.auth.signOut(); } },
     async redefinirSenha(email){
       if(!temSupabase) return;

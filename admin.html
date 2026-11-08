@@ -114,6 +114,12 @@ textarea.input{resize:vertical;min-height:90px}
 .tab em{font-style:normal;font-size:.8em;opacity:.7;margin-left:4px}
 .panel{padding-block:18px 120px}
 
+/* Trocar senha */
+.senha-box{position:fixed;z-index:90;left:50%;top:50%;transform:translate(-50%,-50%);width:min(420px,calc(100% - 32px));background:var(--ink-2);border:1px solid var(--line-2);border-radius:16px;padding:22px 20px;display:grid;gap:14px;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.senha-box h2{font-size:1.6rem}
+#senhaOverlay{z-index:85}
+#senhaOverlay.show{opacity:1;pointer-events:auto}
+
 /* Pedidos */
 .ped-bar{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center;background:var(--ink-2);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:14px}
 .ped-bar .grow{flex:1 1 auto}
@@ -256,6 +262,7 @@ textarea.input{resize:vertical;min-height:90px}
     <span class="chip-mode" id="modeChip"></span>
     <span class="who" id="who" hidden></span>
     <a class="btn btn-ghost btn-sm" href="index.html" target="_blank" rel="noopener">Ver site ↗</a>
+    <button class="btn btn-ghost btn-sm" id="senhaBtn" hidden>Trocar senha</button>
     <button class="btn btn-ghost btn-sm" id="logoutBtn" hidden>Sair</button>
   </div>
 </header>
@@ -430,6 +437,14 @@ textarea.input{resize:vertical;min-height:90px}
 </aside>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="overlay" id="senhaOverlay"></div>
+<form class="senha-box" id="senhaBox" hidden novalidate aria-labelledby="senhaTit">
+  <h2 id="senhaTit">Criar nova senha</h2>
+  <label class="field" for="sNova"><span>Nova senha (mínimo 8 caracteres)</span><input class="input" id="sNova" type="password" autocomplete="new-password"></label>
+  <label class="field" for="sNova2"><span>Repita a nova senha</span><input class="input" id="sNova2" type="password" autocomplete="new-password"></label>
+  <p class="err" id="senhaErr" role="alert"></p>
+  <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn btn-yellow" type="submit" id="senhaSalvar">Salvar nova senha</button><button class="btn btn-ghost" type="button" id="senhaCancelar">Cancelar</button></div>
+</form>
 
 <script src="js/config.js"></script>
 <script>
@@ -1062,6 +1077,13 @@ function art(a, label){
       if(adm.error || adm.data!==true){ await sb.auth.signOut(); throw new Error("Este e-mail não tem acesso ao painel. Cadastre-o na tabela admins do banco."); }
       return { email:r.data.user.email };
     },
+    async trocarSenha(nova){
+      if(!temSupabase) throw new Error("No modo demonstração não há senha.");
+      if(!nova || nova.length<8) throw new Error("A senha precisa ter pelo menos 8 caracteres.");
+      await pronto();
+      const r=await sb.auth.updateUser({ password:nova });
+      if(r.error){ if(/same|different from the old/i.test(r.error.message)) throw new Error("Use uma senha diferente da atual."); throw erroAmigavel(r.error); }
+    },
     async sair(){ if(temSupabase){ await pronto(); await sb.auth.signOut(); } },
     async redefinirSenha(email){
       if(!temSupabase) return;
@@ -1285,7 +1307,8 @@ async function iniciar(){
 function mostrarLogin(){ $("#appView").hidden=true; $("#loginView").hidden=false; $("#logoutBtn").hidden=true; $("#who").hidden=true; setTimeout(()=>$("#lEmail").focus(),50); }
 async function entrarNoApp(s){
   $("#loginView").hidden=true; $("#appView").hidden=false;
-  $("#logoutBtn").hidden=!!s.demo; $("#who").hidden=!!s.demo; $("#who").textContent=s.email;
+  $("#logoutBtn").hidden=!!s.demo; $("#senhaBtn").hidden=!!s.demo; $("#who").hidden=!!s.demo;
+  if(veioDoLinkDeSenha){ veioDoLinkDeSenha=false; abrirSenha(); } $("#who").textContent=s.email;
   await recarregar();
   iniciarPedidos();
 }
@@ -1313,7 +1336,7 @@ $("#forgotBtn").addEventListener("click",async()=>{
   try{ await MB.redefinirSenha(email); $("#loginErr").textContent=""; toast("Enviamos um link de nova senha para "+email); }
   catch(err){ $("#loginErr").textContent=err.message; }
 });
-$("#logoutBtn").addEventListener("click",async()=>{ if(pedParar){ pedParar(); pedParar=null; } clearInterval(pedTimer); PED=[]; pedIniciado=false; await MB.sair(); mostrarLogin(); });
+$("#logoutBtn").addEventListener("click",async()=>{ $("#senhaBtn").hidden=true; if(pedParar){ pedParar(); pedParar=null; } clearInterval(pedTimer); PED=[]; pedIniciado=false; await MB.sair(); mostrarLogin(); });
 $("#resetDemo").addEventListener("click",async e=>{
   const b=e.currentTarget;
   if(!b.classList.contains("armed")){ b.classList.add("armed","btn-danger"); b.textContent="Toque de novo para confirmar"; setTimeout(()=>{ b.classList.remove("armed","btn-danger"); b.textContent="Restaurar exemplos"; },4000); return; }
@@ -1728,6 +1751,23 @@ async function chamarCoyotes(p,btn){
   }catch(e){ p.entrega_status="erro"; p.entrega_erro=e.message; toast(e.message,true); }
   finally{ chamando.delete(p.id); renderPedidos(); }
 }
+
+/* ---------- Trocar senha (também usado pelo link "Esqueci minha senha") ---------- */
+let veioDoLinkDeSenha=/type=recovery/.test(location.hash);
+function abrirSenha(){ $("#senhaErr").textContent=""; $("#sNova").value=""; $("#sNova2").value=""; $("#senhaBox").hidden=false; $("#senhaOverlay").classList.add("show"); setTimeout(()=>$("#sNova").focus(),50); }
+function fecharSenha(){ $("#senhaBox").hidden=true; $("#senhaOverlay").classList.remove("show"); }
+$("#senhaBtn").addEventListener("click",abrirSenha);
+$("#senhaCancelar").addEventListener("click",fecharSenha);
+$("#senhaOverlay").addEventListener("click",fecharSenha);
+$("#senhaBox").addEventListener("submit",async e=>{
+  e.preventDefault(); $("#senhaErr").textContent="";
+  const a=$("#sNova").value, b=$("#sNova2").value;
+  if(a!==b){ $("#senhaErr").textContent="As duas senhas não são iguais."; return; }
+  const btn=$("#senhaSalvar"); btn.disabled=true; btn.textContent="Salvando…";
+  try{ await MB.trocarSenha(a); fecharSenha(); toast("Senha trocada! Use a nova senha da próxima vez."); if(location.hash) history.replaceState(null,"",location.pathname); }
+  catch(err){ $("#senhaErr").textContent=err.message; }
+  finally{ btn.disabled=false; btn.textContent="Salvar nova senha"; }
+});
 
 iniciar();
 })();
