@@ -359,8 +359,8 @@ textarea.input{resize:vertical;min-height:90px}
         <h2>Dados da loja</h2>
         <label class="field" for="cNome"><span>Nome da loja</span><input class="input" id="cNome"></label>
         <div class="grid2">
-          <label class="field" for="cWhats"><span>WhatsApp dos pedidos</span><input class="input num" id="cWhats" inputmode="numeric" placeholder="5569999293397"><small>Só números: 55 + DDD + número.</small></label>
-          <label class="field" for="cTel"><span>Telefone exibido no site</span><input class="input" id="cTel" placeholder="(69) 99929-3397"></label>
+          <label class="field" for="cWhats"><span>WhatsApp dos pedidos</span><input class="input num" id="cWhats" inputmode="numeric" placeholder="5569992482689"><small>Só números: 55 + DDD + número.</small></label>
+          <label class="field" for="cTel"><span>Telefone exibido no site</span><input class="input" id="cTel" placeholder="(69) 99248-2689"></label>
         </div>
         <label class="field" for="cEnd"><span>Endereço (rua, número e bairro)</span><input class="input" id="cEnd"></label>
         <label class="field" for="cCid"><span>Cidade, estado e CEP</span><input class="input" id="cCid"></label>
@@ -550,8 +550,8 @@ function art(a, label){
   const SEED = {
     config: {
       nome: "Marombas Burger",
-      whatsapp: "5569999293397",
-      telefone: "(69) 99929-3397",
+      whatsapp: "5569992482689",
+      telefone: "(69) 99248-2689",
       endereco: "Rua Aruba, 8739 – Socialista",
       cidade: "Porto Velho – RO, CEP 78910-521",
       taxa_entrega: null,
@@ -1171,7 +1171,7 @@ function art(a, label){
         telefone:(c.telefone||"").trim(), endereco:(c.endereco||"").trim(), cidade:(c.cidade||"").trim(),
         taxa_entrega:null,   // taxa informada pelo WhatsApp
         horario:(c.horario||"").trim(), tempo_resposta:(c.tempo_resposta||"").trim() };
-      if(limpo.whatsapp.length<12) throw new Error("WhatsApp inválido. Use 55 + DDD + número, ex.: 5569999293397.");
+      if(limpo.whatsapp.length<12) throw new Error("WhatsApp inválido. Use 55 + DDD + número, ex.: 5569992482689.");
       if(!temSupabase){ const d=demo.ler(); d.config=limpo; demo.gravar(d); return limpo; }
       await pronto();
       ok(await sb.from("configuracoes").upsert({id:1, ...limpo, atualizado_em:new Date().toISOString()}));
