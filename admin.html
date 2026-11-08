@@ -316,6 +316,7 @@ textarea.input{resize:vertical;min-height:90px}
           <option value="80">Papel 80mm</option><option value="58">Papel 58mm</option><option value="a4">Folha A4</option>
         </select>
         <button class="btn btn-ghost btn-sm" id="pedTeste" type="button">Imprimir teste</button>
+        <button class="btn btn-ghost btn-sm" id="pedVer" type="button" title="Abre a comanda de teste numa janela para imprimir com Ctrl+P">Ver comanda</button>
       </div>
       <div class="stats" id="pedStats"></div>
       <div class="ped-list" id="pedList"><div class="loading">Carregando pedidos…</div></div>
@@ -1584,15 +1585,16 @@ let audio=null;
 function ativarPagina(){
   const antes=pedAtivo; pedAtivo=true;
   try{ audio=audio||new (window.AudioContext||window.webkitAudioContext)(); if(audio.state==="suspended") audio.resume(); }catch(e){}
-  $("#pedAtivar").hidden=true;
-  if(!antes) setTimeout(imprimirPendentes,50);
+  setTimeout(()=>{ $("#pedAtivar").hidden=true; },250);
+  if(!antes) setTimeout(imprimirPendentes,300);
 }
 async function imprimirPendentes(){   // pedidos que chegaram antes do clique de ativação
   if(!$("#pedAuto").checked) return;
   const pend=PED.filter(p=>p.status==="novo" && !jaImpressos.has(p.id) && Date.now()-new Date(p.criado_em)<30*60e3);
   for(const p of pend.reverse()) await imprimirPedido(p,false);
 }
-document.addEventListener("pointerdown",ativarPagina,{once:true});
+// "click" (e não "pointerdown"): esconder a faixa no meio do clique mudava a tela de lugar e o clique se perdia
+document.addEventListener("click",ativarPagina,{once:true,capture:true});
 document.addEventListener("keydown",ativarPagina,{once:true});
 $("#pedAtivarBtn").addEventListener("click",()=>{ ativarPagina(); toast("Som e impressão ativados"); });
 function tocar(){
@@ -1611,7 +1613,7 @@ function comandaHTML(p){
     (i.obs?`<div class="ob">OBS: ${esc(i.obs)}</div>`:"")+`</div>`).join("");
   const pag2=esc(p.pagamento)+(p.troco?` – troco p/ R$ ${esc(p.troco)}`:"");
   return `<!doctype html><html><head><meta charset="utf-8"><title>Comanda #${esc(p.codigo)}</title><style>
-@page{size:${pag};margin:${papel==="a4"?"12mm":"0"}}
+@page{${papel==="a4"?"size:A4;margin:12mm":"margin:0"}}
 *{box-sizing:border-box}html,body{margin:0;padding:0;background:#fff;color:#000}
 body{width:${larg};margin:0 auto;padding:3mm 0 6mm;font:700 ${fs}/1.3 "Courier New",Consolas,monospace}
 .c{text-align:center}.big{font-size:1.9em;font-weight:900;letter-spacing:.04em}.loja{font-size:1.25em;font-weight:900}
@@ -1643,12 +1645,14 @@ let filaImp=Promise.resolve();
 function imprimir(p){
   filaImp=filaImp.then(()=>new Promise(fim=>{
     const f=document.createElement("iframe");
-    f.setAttribute("aria-hidden","true"); f.style.cssText="position:fixed;right:0;bottom:0;width:1px;height:1px;border:0;opacity:0";
+    f.setAttribute("aria-hidden","true"); f.style.cssText="position:fixed;left:-10000px;top:0;width:"+(($("#pedPapel").value==="a4")?"210mm":"80mm")+";height:600px;border:0;background:#fff";
     document.body.appendChild(f);
     const d=f.contentDocument; d.open(); d.write(comandaHTML(p)); d.close();
-    let feito=false; const acabar=()=>{ if(feito) return; feito=true; setTimeout(()=>{ f.remove(); fim(); },400); };
+    // a janela só é removida bem depois: removê-la cedo cancela a impressão no modo direto (--kiosk-printing)
+    let feito=false; const acabar=()=>{ if(feito) return; feito=true; setTimeout(fim,1500); setTimeout(()=>f.remove(),60000); };
     f.contentWindow.addEventListener("afterprint",acabar);
-    setTimeout(()=>{ try{ f.contentWindow.focus(); f.contentWindow.print(); }catch(e){ console.warn(e); } acabar(); },250);
+    const imprimirAgora=()=>{ try{ f.contentWindow.focus(); f.contentWindow.print(); }catch(e){ console.warn(e); } setTimeout(acabar,500); };
+    if(d.readyState==="complete") setTimeout(imprimirAgora,300); else f.addEventListener("load",()=>setTimeout(imprimirAgora,300),{once:true});
   }));
   return filaImp;
 }
@@ -1712,11 +1716,14 @@ $("#pedList").addEventListener("click",async e=>{
   const novo={concluir:"concluido",cancelar:"cancelado",reabrir:p.impresso_em?"impresso":"novo"}[ac];
   await acao(b,()=>MB.marcarPedido(p.id,{status:novo})); p.status=novo; renderPedidos();
 });
-$("#pedTeste").addEventListener("click",()=>{
-  ativarPagina();
-  imprimir({ codigo:"TESTE", criado_em:new Date().toISOString(), cliente:"Cliente de teste", tipo:"Entrega", endereco:"Rua Aruba, 8739 – Socialista", pagamento:"Dinheiro", troco:"100",
+const PED_TESTE=()=>({ codigo:"TESTE", criado_em:new Date().toISOString(), cliente:"Cliente de teste", tipo:"Entrega", endereco:"Rua Aruba, 8739 – Socialista", pagamento:"Dinheiro", troco:"100",
     itens:[{q:2,nome:"Insano",total:102.56,adicionais:[{q:1,nome:"bacon"},{q:2,nome:"cheddar"}],obs:"sem cebola"},{q:1,nome:"Refrigerante lata",total:8,adicionais:[],obs:"Coca"}],
     subtotal:110.56, observacoes:"Interfone 12" });
+$("#pedTeste").addEventListener("click",()=>{ ativarPagina(); imprimir(PED_TESTE()); });
+$("#pedVer").addEventListener("click",()=>{
+  const w=window.open("","comanda","width=420,height=760");
+  if(!w){ toast("O navegador bloqueou a janela. Permita pop-ups para este site.",true); return; }
+  w.document.open(); w.document.write(comandaHTML(PED_TESTE()).replace("</body>",'<p style="font:12px sans-serif;text-align:center;color:#555">Aperte Ctrl+P para imprimir</p></body>')); w.document.close();
 });
 async function iniciarPedidos(){
   if(pedParar) return;
