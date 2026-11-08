@@ -1634,6 +1634,7 @@ function art(a, label){
   const BUCKET = "produtos";
   const DEMO_KEY = "mb-demo-db";
   const CACHE_KEY = "mb-cache";
+  const PED_KEY = "mb-demo-pedidos";
 
   const cfg = window.MB_CONFIG || {};
   const temSupabase = !!(cfg.supabaseUrl && cfg.supabaseAnonKey);
@@ -1863,6 +1864,50 @@ function art(a, label){
       await pronto();
       ok(await sb.from("configuracoes").upsert({id:1, ...limpo, atualizado_em:new Date().toISOString()}));
       return limpo;
+    },
+
+    /* ---- Pedidos (comanda) ----
+       O site só envia {id,q,ex,obs} de cada item; o banco recalcula nomes e preços. */
+    registrarPedido(p){
+      const linha={ codigo:p.codigo, cliente:(p.cliente||"").slice(0,80), telefone:(p.telefone||"").slice(0,30)||null, tipo:p.tipo,
+        endereco:(p.endereco||"").slice(0,300)||null, pagamento:(p.pagamento||"").slice(0,60), troco:(p.troco||"").slice(0,20)||null,
+        observacoes:(p.observacoes||"").slice(0,600)||null, itens:p.itens.map(l=>({id:l.id,q:l.q,ex:l.ex||{},obs:(l.obs||"").slice(0,200)})) };
+      if(!temSupabase){
+        const d=demo.ler(), by={}; d.produtos.forEach(x=>by[x.id]=x);
+        let total=0;
+        linha.itens=linha.itens.map(l=>{ const pr=by[l.id]; let unit=pr.preco; const adicionais=[];
+          Object.entries(l.ex).forEach(([k,q])=>{ if(q>0&&by[k]){ unit+=by[k].preco*q; adicionais.push({nome:by[k].nome.replace(/^Adicional de /,""),q,preco:by[k].preco}); } });
+          total+=unit*l.q; return {id:l.id,nome:pr.nome,q:l.q,unit,total:unit*l.q,adicionais,obs:l.obs}; });
+        const lista=ls.get(PED_KEY)||[];
+        lista.unshift({...linha, id:Date.now(), criado_em:new Date().toISOString(), subtotal:total, status:"novo", impresso_em:null});
+        ls.set(PED_KEY,lista.slice(0,200));
+        return Promise.resolve(true);
+      }
+      // fetch com keepalive: o envio termina mesmo se a página mudar logo em seguida
+      const url=cfg.supabaseUrl.trim().replace(/\/$/,"")+"/rest/v1/pedidos", k=cfg.supabaseAnonKey.trim();
+      return fetch(url,{ method:"POST", keepalive:true, headers:{ "apikey":k, "Authorization":"Bearer "+k, "Content-Type":"application/json", "Prefer":"return=minimal" }, body:JSON.stringify(linha) })
+        .then(r=>{ if(!r.ok) return r.text().then(t=>{ console.warn("[Marombas] Pedido não registrado:",t); return false; }); return true; })
+        .catch(e=>{ console.warn("[Marombas] Pedido não registrado:",e.message); return false; });
+    },
+    async listarPedidos(desdeISO){
+      if(!temSupabase) return (ls.get(PED_KEY)||[]).filter(p=>p.criado_em>=desdeISO);
+      await pronto();
+      return ok(await sb.from("pedidos").select("*").gte("criado_em",desdeISO).order("criado_em",{ascending:false}).limit(300));
+    },
+    async marcarPedido(id,campos){
+      if(!temSupabase){ const l=ls.get(PED_KEY)||[]; const p=l.find(x=>x.id===id); if(p) Object.assign(p,campos); ls.set(PED_KEY,l); return; }
+      await pronto();
+      ok(await sb.from("pedidos").update(campos).eq("id",id));
+    },
+    /** Avisa quando chega pedido novo. Devolve função para parar. */
+    async ouvirPedidos(aoChegar){
+      if(!temSupabase){
+        const f=e=>{ if(e.key===PED_KEY) aoChegar(); }; window.addEventListener("storage",f);
+        return ()=>window.removeEventListener("storage",f);
+      }
+      await pronto();
+      const canal=sb.channel("pedidos-novos").on("postgres_changes",{event:"INSERT",schema:"public",table:"pedidos"},()=>aoChegar()).subscribe();
+      return ()=>sb.removeChannel(canal);
     },
 
     /* ---- Demonstração ---- */
@@ -2125,6 +2170,11 @@ function goStep(n){
 /* =====================================================================
    MENSAGEM DO WHATSAPP
    ===================================================================== */
+let pedidoCodigo="";
+function codigoPedido(){
+  if(!pedidoCodigo){ const A="ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; for(let i=0;i<4;i++) pedidoCodigo+=A[Math.floor(Math.random()*A.length)]; }
+  return pedidoCodigo;
+}
 function buildMessage(){
   const nome=$("#fNome").value.trim()||"[Nome]";
   const d=deliveryInfo();
@@ -2137,6 +2187,7 @@ function buildMessage(){
   const linhas=cart.map(l=>{ const ex=extrasTxt(l); return `${l.q}x ${byId[l.id].nome} – ${money(unitPrice(l)*l.q)}`+(ex?`\n   + ${ex}`:"")+(l.obs?`\n   Obs: ${l.obs}`:""); }).join("\n");
   return `Olá! Gostaria de fazer um pedido na ${LOJA.nome}!
 
+Pedido nº #${codigoPedido()}
 Nome: ${nome}
 
 Pedido:
@@ -2273,9 +2324,22 @@ $("#sendWa").addEventListener("click",e=>{
   const resumo={ nome:$("#fNome").value.trim(), tipo:d.tipo, entrega:d.texto, subtotal:money(subtotal()), total:money(subtotal()+d.valor)+(d.tipo==="Entrega"?" + taxa de entrega":""),
     itens:cart.map(l=>{ const ex=extrasTxt(l); return {q:l.q,nome:byId[l.id].nome+(ex?` (+ ${ex})`:""),total:money(unitPrice(l)*l.q)}; }), wa:$("#sendWa").href, resposta:LOJA.tempo_resposta||"", tel:LOJA.telefone, quando:Date.now() };
   if(window.mbTrack) mbTrack("generate_lead",{currency:"BRL",value:subtotal()+d.valor,method:"whatsapp"});
+  resumo.codigo=codigoPedido();
   try{ sessionStorage.setItem("mb-ultimo-pedido",JSON.stringify(resumo)); }catch(_){}
+  // salva o pedido no painel da loja (para imprimir a comanda)
+  let registro=Promise.resolve();
+  if(window.MB && MB.registrarPedido){
+    const pagSel=($('input[name="pag"]:checked')||{}).value||"Pix";
+    registro=MB.registrarPedido({ codigo:codigoPedido(), cliente:$("#fNome").value.trim(), tipo:d.tipo,
+      endereco:d.tipo==="Entrega"?$("#fEnd").value.trim():"", pagamento:pagSel,
+      troco:pagSel==="Dinheiro"?$("#fTroco").value.trim():"",
+      observacoes:[cartObs.trim(), $("#fObs").value.trim()].filter(Boolean).join(" | "),
+      itens:cart.map(l=>({id:l.id,q:l.q,ex:l.ex,obs:l.obs})) });
+  }
+  pedidoCodigo="";
   cart=[]; cartObs=""; $("#cartObs").value=""; save();
-  setTimeout(()=>{ if(window.MB_ARTIFACT && window.mbAbrirPagina) mbAbrirPagina("obrigado.html"); else location.href="obrigado.html"; },400);
+  const irObrigado=()=>{ if(window.MB_ARTIFACT && window.mbAbrirPagina) mbAbrirPagina("obrigado.html"); else location.href="obrigado.html"; };
+  Promise.race([registro, new Promise(r=>setTimeout(r,2500))]).then(()=>setTimeout(irObrigado,300));
 });
 $("#copyMsg").addEventListener("click",()=>{
   const msg=buildMessage();

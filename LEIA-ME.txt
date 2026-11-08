@@ -121,3 +121,22 @@ SE O SITE NÃO CARREGAR O CARDÁPIO
   cardápio que o cliente já viu, ou os produtos de exemplo.
 - Projetos grátis do Supabase são pausados depois de 7 dias sem
   nenhum acesso. Se acontecer, entre no Supabase e clique em "Restore".
+
+
+=====================================================================
+IMPRESSÃO DE COMANDAS (pedidos do site)
+=====================================================================
+Todo pedido enviado pelo site fica salvo e aparece na aba PEDIDOS do
+painel (admin.html), com um código (ex.: #K7P2) que também vai na
+mensagem do WhatsApp.
+
+No computador da loja:
+1. Deixe a impressora de comanda como IMPRESSORA PADRÃO do Windows.
+2. Dê dois cliques em "abrir-painel-comandas.bat". Ele abre o painel
+   no Chrome em modo de impressão direta (sem janela de impressão).
+3. Entre com e-mail e senha (só na primeira vez) e clique em "Ativar".
+4. Deixe a janela aberta. Cada pedido novo toca um aviso e sai impresso.
+
+No painel dá para: escolher papel 80mm, 58mm ou A4, ligar/desligar a
+impressão automática e o som, reimprimir, concluir e cancelar pedidos.
+Os preços da comanda são conferidos pelo banco de dados com o cardápio.

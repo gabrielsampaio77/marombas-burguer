@@ -114,6 +114,43 @@ textarea.input{resize:vertical;min-height:90px}
 .tab em{font-style:normal;font-size:.8em;opacity:.7;margin-left:4px}
 .panel{padding-block:18px 120px}
 
+/* Pedidos */
+.ped-bar{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center;background:var(--ink-2);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:14px}
+.ped-bar .grow{flex:1 1 auto}
+.live{display:inline-flex;align-items:center;gap:8px;font-family:var(--f-label);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:.85rem;color:var(--mute)}
+.live i{width:10px;height:10px;border-radius:50%;background:var(--line-2)}
+.live.on{color:var(--ok)}.live.on i{background:var(--ok);box-shadow:0 0 0 0 rgba(60,207,110,.6);animation:livePulse 1.8s infinite}
+@keyframes livePulse{70%{box-shadow:0 0 0 8px rgba(60,207,110,0)}100%{box-shadow:0 0 0 0 rgba(60,207,110,0)}}
+.ped-bar select.input{width:auto;padding:.45em .7em}
+.ativar{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;border:1px solid var(--yellow);background:rgba(255,194,26,.1);border-radius:12px;padding:12px 14px;margin-bottom:14px}
+.ped-list{display:grid;gap:12px}
+.ped{background:var(--ink-2);border:1px solid var(--line);border-left:5px solid var(--line-2);border-radius:12px;padding:14px 16px;display:grid;gap:10px}
+.ped.novo{border-left-color:var(--yellow);animation:pedIn .5s ease}
+.ped.impresso{border-left-color:var(--ok)}
+.ped.concluido{opacity:.62;border-left-color:var(--line-2)}
+.ped.cancelado{opacity:.5;border-left-color:var(--red-hot)}
+.ped.cancelado .ped-itens{text-decoration:line-through}
+@keyframes pedIn{from{transform:translateY(-6px);background:rgba(255,194,26,.18)}}
+.ped-head{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline}
+.ped-head b.cod{font-family:var(--f-display);font-weight:900;font-size:1.7rem;letter-spacing:.02em}
+.ped-head .hora{color:var(--mute);font-variant-numeric:tabular-nums}
+.ped-head .st{margin-left:auto;font-family:var(--f-label);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:.78rem;padding:.2em .6em;border-radius:6px;background:var(--ink-3);color:var(--mute)}
+.ped.novo .st{background:var(--yellow);color:var(--ink)}
+.ped.impresso .st{background:var(--ok-bg);color:var(--ok)}
+.ped.cancelado .st{background:var(--warn-bg);color:var(--red-hot)}
+.ped-info{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:.95rem}
+.ped-info span{color:var(--mute)}.ped-info b{font-weight:600}
+.ped-itens{margin:0;padding:0;list-style:none;display:grid;gap:4px;border-top:1px dashed var(--line-2);padding-top:8px}
+.ped-itens li{display:flex;gap:10px;justify-content:space-between}
+.ped-itens small{display:block;color:var(--mute)}
+.ped-foot{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.ped-foot .tot{margin-right:auto;font-family:var(--f-display);font-weight:900;font-size:1.35rem}
+.ped-dica{margin-top:22px;color:var(--mute);font-size:.92rem;max-width:760px}
+.ped-dica summary{cursor:pointer;color:var(--white);font-weight:600}
+.ped-dica code{background:var(--ink-3);padding:.1em .4em;border-radius:5px;color:var(--yellow)}
+.ped-dica ol{padding-left:1.2em}
+@media (max-width:600px){.ped-head .st{margin-left:0}.ped-bar{gap:12px}}
+
 /* Barra de ferramentas */
 .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
 .toolbar .search{flex:1 1 220px;position:relative}
@@ -245,13 +282,43 @@ textarea.input{resize:vertical;min-height:90px}
   <!-- APP -->
   <section id="appView" hidden>
     <nav class="tabs" role="tablist" aria-label="Seções do painel">
-      <button class="tab" role="tab" id="tab-produtos" aria-controls="p-produtos" aria-selected="true">Produtos <em id="tProdCount"></em></button>
+      <button class="tab" role="tab" id="tab-pedidos" aria-controls="p-pedidos" aria-selected="true">Pedidos <em id="tPedCount"></em></button>
+      <button class="tab" role="tab" id="tab-produtos" aria-controls="p-produtos" aria-selected="false">Produtos <em id="tProdCount"></em></button>
       <button class="tab" role="tab" id="tab-categorias" aria-controls="p-categorias" aria-selected="false">Categorias <em id="tCatCount"></em></button>
       <button class="tab" role="tab" id="tab-loja" aria-controls="p-loja" aria-selected="false">Dados da loja</button>
     </nav>
 
+    <!-- Pedidos -->
+    <div class="panel" id="p-pedidos" role="tabpanel" aria-labelledby="tab-pedidos">
+      <div class="ativar" id="pedAtivar" hidden>
+        <span><b>Toque aqui para ativar o som e a impressão automática.</b><br><small style="color:var(--mute)">O navegador só libera som e impressão depois de um clique na página.</small></span>
+        <button class="btn btn-yellow btn-sm" id="pedAtivarBtn" type="button">Ativar</button>
+      </div>
+      <div class="ped-bar">
+        <span class="live" id="pedLive"><i></i><span id="pedLiveTxt">Conectando…</span></span>
+        <span class="grow"></span>
+        <label class="switch"><input type="checkbox" id="pedAuto"><span class="track"></span><span class="txt">Imprimir sozinho</span></label>
+        <label class="switch"><input type="checkbox" id="pedSom"><span class="track"></span><span class="txt">Som</span></label>
+        <select class="input" id="pedPapel" aria-label="Largura do papel">
+          <option value="80">Papel 80mm</option><option value="58">Papel 58mm</option><option value="a4">Folha A4</option>
+        </select>
+        <button class="btn btn-ghost btn-sm" id="pedTeste" type="button">Imprimir teste</button>
+      </div>
+      <div class="stats" id="pedStats"></div>
+      <div class="ped-list" id="pedList"><div class="loading">Carregando pedidos…</div></div>
+      <details class="ped-dica" id="pedDica">
+        <summary>Como imprimir sem abrir a janela de impressão (computador da loja)</summary>
+        <ol>
+          <li>Deixe a impressora de comanda como <b>impressora padrão</b> do Windows (Configurações → Impressoras → clique nela → Definir como padrão).</li>
+          <li>Abra o painel pelo arquivo <code>abrir-painel-comandas.bat</code> que vem junto do site (dois cliques). Ele abre o Chrome no modo de impressão direta.</li>
+          <li>Entre com seu e-mail e senha uma vez e deixe essa janela aberta. Cada pedido novo sai impresso sozinho.</li>
+        </ol>
+        <p>Se abrir o painel pelo Chrome normal, a comanda também sai, mas o Chrome mostra a janela de impressão e é preciso clicar em <b>Imprimir</b>.</p>
+      </details>
+    </div>
+
     <!-- Produtos -->
-    <div class="panel" id="p-produtos" role="tabpanel" aria-labelledby="tab-produtos">
+    <div class="panel" id="p-produtos" role="tabpanel" aria-labelledby="tab-produtos" hidden>
       <div class="toolbar">
         <label class="search" for="fBusca"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
           <input class="input" id="fBusca" type="search" placeholder="Buscar produto" aria-label="Buscar produto"></label>
@@ -850,6 +917,7 @@ function art(a, label){
   const BUCKET = "produtos";
   const DEMO_KEY = "mb-demo-db";
   const CACHE_KEY = "mb-cache";
+  const PED_KEY = "mb-demo-pedidos";
 
   const cfg = window.MB_CONFIG || {};
   const temSupabase = !!(cfg.supabaseUrl && cfg.supabaseAnonKey);
@@ -1081,6 +1149,50 @@ function art(a, label){
       return limpo;
     },
 
+    /* ---- Pedidos (comanda) ----
+       O site só envia {id,q,ex,obs} de cada item; o banco recalcula nomes e preços. */
+    registrarPedido(p){
+      const linha={ codigo:p.codigo, cliente:(p.cliente||"").slice(0,80), telefone:(p.telefone||"").slice(0,30)||null, tipo:p.tipo,
+        endereco:(p.endereco||"").slice(0,300)||null, pagamento:(p.pagamento||"").slice(0,60), troco:(p.troco||"").slice(0,20)||null,
+        observacoes:(p.observacoes||"").slice(0,600)||null, itens:p.itens.map(l=>({id:l.id,q:l.q,ex:l.ex||{},obs:(l.obs||"").slice(0,200)})) };
+      if(!temSupabase){
+        const d=demo.ler(), by={}; d.produtos.forEach(x=>by[x.id]=x);
+        let total=0;
+        linha.itens=linha.itens.map(l=>{ const pr=by[l.id]; let unit=pr.preco; const adicionais=[];
+          Object.entries(l.ex).forEach(([k,q])=>{ if(q>0&&by[k]){ unit+=by[k].preco*q; adicionais.push({nome:by[k].nome.replace(/^Adicional de /,""),q,preco:by[k].preco}); } });
+          total+=unit*l.q; return {id:l.id,nome:pr.nome,q:l.q,unit,total:unit*l.q,adicionais,obs:l.obs}; });
+        const lista=ls.get(PED_KEY)||[];
+        lista.unshift({...linha, id:Date.now(), criado_em:new Date().toISOString(), subtotal:total, status:"novo", impresso_em:null});
+        ls.set(PED_KEY,lista.slice(0,200));
+        return Promise.resolve(true);
+      }
+      // fetch com keepalive: o envio termina mesmo se a página mudar logo em seguida
+      const url=cfg.supabaseUrl.trim().replace(/\/$/,"")+"/rest/v1/pedidos", k=cfg.supabaseAnonKey.trim();
+      return fetch(url,{ method:"POST", keepalive:true, headers:{ "apikey":k, "Authorization":"Bearer "+k, "Content-Type":"application/json", "Prefer":"return=minimal" }, body:JSON.stringify(linha) })
+        .then(r=>{ if(!r.ok) return r.text().then(t=>{ console.warn("[Marombas] Pedido não registrado:",t); return false; }); return true; })
+        .catch(e=>{ console.warn("[Marombas] Pedido não registrado:",e.message); return false; });
+    },
+    async listarPedidos(desdeISO){
+      if(!temSupabase) return (ls.get(PED_KEY)||[]).filter(p=>p.criado_em>=desdeISO);
+      await pronto();
+      return ok(await sb.from("pedidos").select("*").gte("criado_em",desdeISO).order("criado_em",{ascending:false}).limit(300));
+    },
+    async marcarPedido(id,campos){
+      if(!temSupabase){ const l=ls.get(PED_KEY)||[]; const p=l.find(x=>x.id===id); if(p) Object.assign(p,campos); ls.set(PED_KEY,l); return; }
+      await pronto();
+      ok(await sb.from("pedidos").update(campos).eq("id",id));
+    },
+    /** Avisa quando chega pedido novo. Devolve função para parar. */
+    async ouvirPedidos(aoChegar){
+      if(!temSupabase){
+        const f=e=>{ if(e.key===PED_KEY) aoChegar(); }; window.addEventListener("storage",f);
+        return ()=>window.removeEventListener("storage",f);
+      }
+      await pronto();
+      const canal=sb.channel("pedidos-novos").on("postgres_changes",{event:"INSERT",schema:"public",table:"pedidos"},()=>aoChegar()).subscribe();
+      return ()=>sb.removeChannel(canal);
+    },
+
     /* ---- Demonstração ---- */
     restaurarDemo(){ try{ localStorage.removeItem(DEMO_KEY); }catch(e){} }
   };
@@ -1127,7 +1239,7 @@ const PADRAO_CAT={burgers:"burger",combos:"combo",porcoes:"fries",acai:"acai",be
 const thumb=p=>p.img?`<img src="${esc(p.img)}" alt="" loading="lazy">`:`<span class="nofoto">Sem foto</span>`;
 
 let D={config:{},categorias:[],produtos:[]};
-let tabAtual="produtos";
+let tabAtual="pedidos";
 
 /* ---------- Avisos ---------- */
 let tT;
@@ -1155,6 +1267,7 @@ async function entrarNoApp(s){
   $("#loginView").hidden=true; $("#appView").hidden=false;
   $("#logoutBtn").hidden=!!s.demo; $("#who").hidden=!!s.demo; $("#who").textContent=s.email;
   await recarregar();
+  iniciarPedidos();
 }
 async function recarregar(){
   try{ D=await MB.carregar(); }
@@ -1180,7 +1293,7 @@ $("#forgotBtn").addEventListener("click",async()=>{
   try{ await MB.redefinirSenha(email); $("#loginErr").textContent=""; toast("Enviamos um link de nova senha para "+email); }
   catch(err){ $("#loginErr").textContent=err.message; }
 });
-$("#logoutBtn").addEventListener("click",async()=>{ await MB.sair(); mostrarLogin(); });
+$("#logoutBtn").addEventListener("click",async()=>{ if(pedParar){ pedParar(); pedParar=null; } clearInterval(pedTimer); PED=[]; pedIniciado=false; await MB.sair(); mostrarLogin(); });
 $("#resetDemo").addEventListener("click",async e=>{
   const b=e.currentTarget;
   if(!b.classList.contains("armed")){ b.classList.add("armed","btn-danger"); b.textContent="Toque de novo para confirmar"; setTimeout(()=>{ b.classList.remove("armed","btn-danger"); b.textContent="Restaurar exemplos"; },4000); return; }
@@ -1402,6 +1515,172 @@ $("#lojaForm").addEventListener("submit",async e=>{
   try{ D.config=await acao($("#lojaSave"),()=>MB.salvarConfig(novo),"Dados da loja salvos"); renderLoja(); }
   catch(err){ $("#lojaErr").textContent=err.message; }
 });
+
+/* =====================================================================
+   PEDIDOS + COMANDA
+   ===================================================================== */
+const PREF={ get(k,d){ try{ const v=localStorage.getItem("mb-ped-"+k); return v===null?d:JSON.parse(v); }catch(e){ return d; } },
+             set(k,v){ try{ localStorage.setItem("mb-ped-"+k,JSON.stringify(v)); }catch(e){} } };
+let PED=[], pedIniciado=false, pedParar=null, pedTimer=null, pedAtivo=false;
+const jaImpressos=new Set();          // pedidos impressos por esta janela
+const abertoEm=Date.now();
+const brl=v=>"R$ "+Number(v||0).toFixed(2).replace(".",",");
+const hora=iso=>new Date(iso).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+const dataHora=iso=>new Date(iso).toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"});
+const ST={novo:"Novo",impresso:"Impresso",concluido:"Concluído",cancelado:"Cancelado"};
+
+$("#pedAuto").checked=PREF.get("auto",true);
+$("#pedSom").checked=PREF.get("som",true);
+$("#pedPapel").value=PREF.get("papel","80");
+$("#pedAuto").addEventListener("change",e=>{ PREF.set("auto",e.target.checked); toast(e.target.checked?"Impressão automática ligada":"Impressão automática desligada"); });
+$("#pedSom").addEventListener("change",e=>PREF.set("som",e.target.checked));
+$("#pedPapel").addEventListener("change",e=>PREF.set("papel",e.target.value));
+
+/* Som (precisa de um clique na página antes) */
+let audio=null;
+function ativarPagina(){
+  const antes=pedAtivo; pedAtivo=true;
+  try{ audio=audio||new (window.AudioContext||window.webkitAudioContext)(); if(audio.state==="suspended") audio.resume(); }catch(e){}
+  $("#pedAtivar").hidden=true;
+  if(!antes) setTimeout(imprimirPendentes,50);
+}
+async function imprimirPendentes(){   // pedidos que chegaram antes do clique de ativação
+  if(!$("#pedAuto").checked) return;
+  const pend=PED.filter(p=>p.status==="novo" && !jaImpressos.has(p.id) && Date.now()-new Date(p.criado_em)<30*60e3);
+  for(const p of pend.reverse()) await imprimirPedido(p,false);
+}
+document.addEventListener("pointerdown",ativarPagina,{once:true});
+document.addEventListener("keydown",ativarPagina,{once:true});
+$("#pedAtivarBtn").addEventListener("click",()=>{ ativarPagina(); toast("Som e impressão ativados"); });
+function tocar(){
+  if(!$("#pedSom").checked||!audio) return;
+  try{ const t=audio.currentTime; [0,.18,.36].forEach((d,i)=>{ const o=audio.createOscillator(), g=audio.createGain();
+    o.type="square"; o.frequency.value=i===2?1320:988; g.gain.setValueAtTime(.0001,t+d); g.gain.exponentialRampToValueAtTime(.25,t+d+.02); g.gain.exponentialRampToValueAtTime(.0001,t+d+.15);
+    o.connect(g).connect(audio.destination); o.start(t+d); o.stop(t+d+.16); }); }catch(e){}
+}
+
+/* Comanda */
+function comandaHTML(p){
+  const papel=$("#pedPapel").value, larg=papel==="58"?"48mm":papel==="a4"?"120mm":"72mm", pag=papel==="a4"?"A4":(papel==="58"?"58mm":"80mm")+" auto";
+  const fs=papel==="58"?"12px":"14px";
+  const itens=(p.itens||[]).map(i=>`<div class="it"><div class="l"><b>${i.q}x ${esc(i.nome)}</b><span>${brl(i.total)}</span></div>`+
+    (i.adicionais||[]).map(a=>`<div class="ad">+ ${a.q>1?a.q+"x ":""}${esc(a.nome)}</div>`).join("")+
+    (i.obs?`<div class="ob">OBS: ${esc(i.obs)}</div>`:"")+`</div>`).join("");
+  const pag2=esc(p.pagamento)+(p.troco?` – troco p/ R$ ${esc(p.troco)}`:"");
+  return `<!doctype html><html><head><meta charset="utf-8"><title>Comanda #${esc(p.codigo)}</title><style>
+@page{size:${pag};margin:${papel==="a4"?"12mm":"0"}}
+*{box-sizing:border-box}html,body{margin:0;padding:0;background:#fff;color:#000}
+body{width:${larg};margin:0 auto;padding:3mm 0 6mm;font:700 ${fs}/1.3 "Courier New",Consolas,monospace}
+.c{text-align:center}.big{font-size:1.9em;font-weight:900;letter-spacing:.04em}.loja{font-size:1.25em;font-weight:900}
+hr{border:0;border-top:1px dashed #000;margin:2mm 0}
+.l{display:flex;justify-content:space-between;gap:2mm}.l span{white-space:nowrap}
+.it{margin:1.4mm 0}.ad{padding-left:3mm;font-weight:400}.ob{padding-left:3mm;font-weight:900}
+.k{font-weight:400}.tipo{font-size:1.25em;font-weight:900;border:2px solid #000;padding:1mm;margin:1.5mm 0;text-align:center}
+.tot{font-size:1.3em;font-weight:900}
+</style></head><body>
+<div class="c loja">MAROMBA'S BURGUER</div>
+<div class="c k">${esc(D.config.telefone||"")}</div>
+<hr><div class="c">PEDIDO</div><div class="c big">#${esc(p.codigo)}</div>
+<div class="c k">${dataHora(p.criado_em)}</div>
+<div class="tipo">${p.tipo==="Entrega"?"ENTREGA":"RETIRADA NO LOCAL"}</div>
+<div><span class="k">Cliente:</span> ${esc(p.cliente)}</div>
+${p.tipo==="Entrega"?`<div><span class="k">Endereço:</span> ${esc(p.endereco||"")}</div>`:""}
+<div><span class="k">Pagamento:</span> ${pag2}</div>
+<hr>${itens}<hr>
+<div class="l"><span class="k">Subtotal</span><span>${brl(p.subtotal)}</span></div>
+${p.tipo==="Entrega"?`<div class="l"><span class="k">Entrega</span><span>a informar</span></div>`:""}
+<div class="l tot"><span>TOTAL</span><span>${brl(p.subtotal)}${p.tipo==="Entrega"?" + ent.":""}</span></div>
+${p.observacoes?`<hr><div><b>OBSERVAÇÕES:</b></div><div>${esc(p.observacoes)}</div>`:""}
+<hr><div class="c k">Pedido feito pelo site</div><div class="c k">.</div>
+</body></html>`;
+}
+/* Fila de impressão: um de cada vez */
+let filaImp=Promise.resolve();
+function imprimir(p){
+  filaImp=filaImp.then(()=>new Promise(fim=>{
+    const f=document.createElement("iframe");
+    f.setAttribute("aria-hidden","true"); f.style.cssText="position:fixed;right:0;bottom:0;width:1px;height:1px;border:0;opacity:0";
+    document.body.appendChild(f);
+    const d=f.contentDocument; d.open(); d.write(comandaHTML(p)); d.close();
+    let feito=false; const acabar=()=>{ if(feito) return; feito=true; setTimeout(()=>{ f.remove(); fim(); },400); };
+    f.contentWindow.addEventListener("afterprint",acabar);
+    setTimeout(()=>{ try{ f.contentWindow.focus(); f.contentWindow.print(); }catch(e){ console.warn(e); } acabar(); },250);
+  }));
+  return filaImp;
+}
+async function imprimirPedido(p,manual){
+  jaImpressos.add(p.id);
+  await imprimir(p);
+  if(p.status==="novo"){
+    p.status="impresso"; p.impresso_em=new Date().toISOString(); renderPedidos();
+    try{ await MB.marcarPedido(p.id,{status:"impresso",impresso_em:p.impresso_em}); }catch(e){ if(manual) toast(e.message,true); }
+  }
+}
+
+/* Lista */
+function inicioDoDia(){ const d=new Date(); d.setHours(0,0,0,0); if(Date.now()-d<4*3600e3) d.setDate(d.getDate()-1); return d.toISOString(); } // até 4h da manhã ainda conta o dia anterior
+async function buscarPedidos(){
+  let lista;
+  try{ lista=await MB.listarPedidos(inicioDoDia()); }
+  catch(e){ $("#pedLive").classList.remove("on"); $("#pedLiveTxt").textContent="Sem conexão"; if(!PED.length) $("#pedList").innerHTML=`<div class="empty">${esc(e.message)}</div>`; return; }
+  const conhecidos=new Set(PED.map(p=>p.id)), primeiraVez=!pedIniciado;
+  const novos=lista.filter(p=>!conhecidos.has(p.id));
+  PED=lista; pedIniciado=true; renderPedidos();
+  // pedidos que chegaram agora: som + impressão automática
+  const paraImprimir=novos.filter(p=>p.status==="novo" && !jaImpressos.has(p.id) && (!primeiraVez || Date.now()-new Date(p.criado_em)<30*60e3));
+  if(!primeiraVez && novos.some(p=>p.status==="novo")){ tocar(); piscarTitulo(novos.length); }
+  if($("#pedAuto").checked && paraImprimir.length){
+    if(!pedAtivo){ $("#pedAtivar").hidden=false; return; }
+    for(const p of paraImprimir.reverse()) await imprimirPedido(p,false);
+  }
+}
+let tituloT=null; const tituloBase=document.title;
+function piscarTitulo(n){
+  clearInterval(tituloT); let on=false;
+  tituloT=setInterval(()=>{ on=!on; document.title=on?`(${n}) Novo pedido!`:tituloBase; },900);
+  const parar=()=>{ clearInterval(tituloT); document.title=tituloBase; };
+  window.addEventListener("focus",parar,{once:true}); document.addEventListener("pointerdown",parar,{once:true});
+}
+function renderPedidos(){
+  const ativos=PED.filter(p=>p.status!=="cancelado");
+  $("#tPedCount").textContent=PED.filter(p=>p.status==="novo").length||"";
+  $("#pedStats").innerHTML=`<span>Hoje: <b>${ativos.length}</b> pedido${ativos.length===1?"":"s"}</span><span>Total em produtos: <b>${brl(ativos.reduce((s,p)=>s+Number(p.subtotal||0),0))}</b></span>`;
+  if(!PED.length){ $("#pedList").innerHTML=`<div class="empty">Nenhum pedido hoje ainda.<br>Quando um cliente enviar pelo site, ele aparece aqui na hora.</div>`; return; }
+  $("#pedList").innerHTML=PED.map(p=>`<article class="ped ${esc(p.status)}" data-id="${p.id}">
+    <div class="ped-head"><b class="cod">#${esc(p.codigo)}</b><span class="hora">${hora(p.criado_em)}</span><b>${esc(p.cliente)}</b><span class="st">${ST[p.status]||p.status}</span></div>
+    <div class="ped-info"><div><span>Tipo:</span> <b>${esc(p.tipo)}</b></div>${p.tipo==="Entrega"?`<div><span>Endereço:</span> <b>${esc(p.endereco||"")}</b></div>`:""}<div><span>Pagamento:</span> <b>${esc(p.pagamento)}${p.troco?` (troco p/ R$ ${esc(p.troco)})`:""}</b></div></div>
+    <ul class="ped-itens">${(p.itens||[]).map(i=>`<li><span>${i.q}x ${esc(i.nome)}${(i.adicionais||[]).length?`<small>+ ${i.adicionais.map(a=>(a.q>1?a.q+"x ":"")+esc(a.nome)).join(", ")}</small>`:""}${i.obs?`<small>Obs: ${esc(i.obs)}</small>`:""}</span><span class="num">${brl(i.total)}</span></li>`).join("")}</ul>
+    ${p.observacoes?`<div class="ped-info"><div><span>Observações:</span> <b>${esc(p.observacoes)}</b></div></div>`:""}
+    <div class="ped-foot"><span class="tot num">${brl(p.subtotal)}${p.tipo==="Entrega"?' <small style="font-size:.55em;color:var(--mute)">+ entrega</small>':""}</span>
+      <button class="btn btn-yellow btn-sm" data-ac="imprimir">${p.status==="novo"?"Imprimir comanda":"Reimprimir"}</button>
+      ${p.status!=="concluido"&&p.status!=="cancelado"?`<button class="btn btn-ghost btn-sm" data-ac="concluir">Concluir</button><button class="btn btn-danger btn-sm" data-ac="cancelar">Cancelar</button>`:`<button class="btn btn-ghost btn-sm" data-ac="reabrir">Reabrir</button>`}
+    </div></article>`).join("");
+}
+$("#pedList").addEventListener("click",async e=>{
+  const b=e.target.closest("button[data-ac]"); if(!b) return;
+  const p=PED.find(x=>String(x.id)===b.closest(".ped").dataset.id); if(!p) return;
+  const ac=b.dataset.ac;
+  if(ac==="imprimir"){ await imprimirPedido(p,true); return; }
+  if(ac==="cancelar" && !b.classList.contains("armed")){ b.classList.add("armed"); b.textContent="Confirmar?"; setTimeout(()=>{ b.classList.remove("armed"); b.textContent="Cancelar"; },3500); return; }
+  const novo={concluir:"concluido",cancelar:"cancelado",reabrir:p.impresso_em?"impresso":"novo"}[ac];
+  await acao(b,()=>MB.marcarPedido(p.id,{status:novo})); p.status=novo; renderPedidos();
+});
+$("#pedTeste").addEventListener("click",()=>{
+  ativarPagina();
+  imprimir({ codigo:"TESTE", criado_em:new Date().toISOString(), cliente:"Cliente de teste", tipo:"Entrega", endereco:"Rua Aruba, 8739 – Socialista", pagamento:"Dinheiro", troco:"100",
+    itens:[{q:2,nome:"Insano",total:102.56,adicionais:[{q:1,nome:"bacon"},{q:2,nome:"cheddar"}],obs:"sem cebola"},{q:1,nome:"Refrigerante lata",total:8,adicionais:[],obs:"Coca"}],
+    subtotal:110.56, observacoes:"Interfone 12" });
+});
+async function iniciarPedidos(){
+  if(pedParar) return;
+  await buscarPedidos();
+  try{
+    pedParar=await MB.ouvirPedidos(()=>buscarPedidos());
+    $("#pedLive").classList.add("on"); $("#pedLiveTxt").textContent="Recebendo pedidos ao vivo";
+  }catch(e){ $("#pedLiveTxt").textContent="Atualizando a cada 15 s"; }
+  clearInterval(pedTimer); pedTimer=setInterval(buscarPedidos,15000);   // garantia, caso o aviso ao vivo caia
+  if(!pedAtivo && $("#pedAuto").checked) $("#pedAtivar").hidden=false;
+}
 
 iniciar();
 })();

@@ -241,6 +241,7 @@ document.querySelectorAll(".ano").forEach(function(e){ e.textContent=new Date().
   [["Subtotal",r.subtotal],["Entrega",r.entrega]].forEach(function(x){ var li=document.createElement("li"); li.innerHTML="<span></span><span></span>"; li.children[0].textContent=x[0]; li.children[1].textContent=x[1]; ul.appendChild(li); });
   var tot=document.createElement("li"); tot.className="tot"; tot.innerHTML="<span>Total</span><span></span>"; tot.children[1].textContent=r.total; ul.appendChild(tot);
   t("tipo","Tipo: "+r.tipo+" · O pagamento é feito na entrega ou na retirada.");
+  if(r.codigo) t("resumoTitulo","Pedido nº #"+r.codigo);
   document.getElementById("resumo").hidden=false;
 })();
 </script>
