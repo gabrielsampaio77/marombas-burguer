@@ -1712,6 +1712,7 @@ $("#pedList").addEventListener("click",async e=>{
   const ac=b.dataset.ac;
   if(ac==="imprimir"){ await imprimirPedido(p,true); return; }
   if(ac==="coyotes"){ await chamarCoyotes(p,b); return; }
+  if(ac==="copiarCoy"){ copiarTexto(textoCoyotes(p),"Dados da entrega copiados. Cole no app ou no WhatsApp da Coyotes."); return; }
   if(ac==="cancelar" && !b.classList.contains("armed")){ b.classList.add("armed"); b.textContent="Confirmar?"; setTimeout(()=>{ b.classList.remove("armed"); b.textContent="Cancelar"; },3500); return; }
   const novo={concluir:"concluido",cancelar:"cancelado",reabrir:p.impresso_em?"impresso":"novo"}[ac];
   await acao(b,()=>MB.marcarPedido(p.id,{status:novo})); p.status=novo; renderPedidos();
@@ -1745,7 +1746,9 @@ function coyBotao(p){
   if(p.tipo!=="Entrega" || p.status==="cancelado") return "";
   if(p.entrega_id) return `<span class="coy">🛵 Coyotes chamada · nº ${esc(p.entrega_id)}</span>`;
   const erro=p.entrega_status==="erro"?`<span class="coy erro" title="${esc(p.entrega_erro||"")}">Coyotes: ${esc((p.entrega_erro||"erro").slice(0,60))}</span>`:"";
-  return erro+`<button class="btn btn-coy btn-sm" data-ac="coyotes" ${coyOn?"":'disabled title="Falta ativar a integração com a Coyotes"'}>${p.entrega_status==="erro"?"Tentar Coyotes de novo":"Chamar motoboy Coyotes"}</button>`;
+  const copiar=`<button class="btn btn-ghost btn-sm" data-ac="copiarCoy" title="Copia os dados da entrega para colar no app ou no WhatsApp da Coyotes">Copiar para a Coyotes</button>`;
+  if(!coyOn) return copiar;
+  return erro+copiar+`<button class="btn btn-coy btn-sm" data-ac="coyotes">${p.entrega_status==="erro"?"Tentar Coyotes de novo":"Chamar motoboy Coyotes"}</button>`;
 }
 const chamando=new Set();
 async function chamarCoyotes(p,btn){
@@ -1775,6 +1778,23 @@ $("#senhaBox").addEventListener("submit",async e=>{
   catch(err){ $("#senhaErr").textContent=err.message; }
   finally{ btn.disabled=false; btn.textContent="Salvar nova senha"; }
 });
+
+function textoCoyotes(p){
+  const c=D.config||{};
+  return [
+    `🛵 ENTREGA – ${c.nome||"Marombas Burger"} – Pedido #${p.codigo}`,
+    ``,
+    `📍 RETIRADA: ${c.endereco||""}${c.cidade?", "+c.cidade:""}`,
+    `🏠 ENTREGA: ${p.endereco||""}`,
+    `👤 Cliente: ${p.cliente}${p.telefone?" – "+p.telefone:""}`,
+    `💰 Pedido: ${brl(p.subtotal)} + taxa de entrega · Pagamento: ${p.pagamento}${p.troco?" (troco p/ R$ "+p.troco+")":""}`,
+    `📦 ${(p.itens||[]).map(i=>i.q+"x "+i.nome).join(", ")}`,
+  ].join("\n");
+}
+function copiarTexto(t,ok){
+  const reserva=()=>{ const ta=document.createElement("textarea"); ta.value=t; ta.style.cssText="position:fixed;opacity:0"; document.body.appendChild(ta); ta.select(); try{ document.execCommand("copy"); toast(ok); }catch(_){ toast("Não foi possível copiar.",true); } ta.remove(); };
+  try{ navigator.clipboard.writeText(t).then(()=>toast(ok),reserva); }catch(_){ reserva(); }
+}
 
 iniciar();
 })();
