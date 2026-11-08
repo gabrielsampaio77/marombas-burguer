@@ -6,7 +6,7 @@
 <title>Painel Marombas</title>
 <meta name="description" content="Área restrita do lojista para gerenciar cardápio, fotos e dados da Marombas Burger.">
 <meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#0e0c09">
+<meta name="theme-color" content="#2a0303">
 <link rel="icon" href="favicon.png" type="image/png" sizes="48x48">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,10 +14,10 @@
 <style>
 /* Layout: painel de uso diário — barra fixa no topo, abas, listas em linhas, editor em gaveta (tela cheia no celular). */
 :root{
-  --ink:#0e0c09; --ink-2:#17140f; --ink-3:#221e16; --line:#383123; --line-2:#4a4130;
-  --yellow:#ffc21a; --yellow-soft:#ffd75c; --red:#e3271c; --red-hot:#ff4636; --fire:#ff7a12;
-  --white:#f8f4ea; --mute:#a9a08b; --ok:#3ccf6e; --ok-bg:rgba(60,207,110,.14); --warn-bg:rgba(255,70,54,.14);
-  --glass:rgba(14,12,9,.9); --shade:rgba(0,0,0,.6);
+  --ink:#2a0303; --ink-2:#3a0606; --ink-3:#4c0b0b; --line:#6e1a1a; --line-2:#8a2a2a;
+  --yellow:#ffffff; --yellow-soft:#ebe8ff; --red:#c50f0f; --red-hot:#ff6b6b; --fire:#ff3d3d;
+  --white:#ffffff; --mute:#dcb9b9; --blue:#4a3aa0; --blue-soft:#b3a9ff; --navy:#100080; --ok:#3ccf6e; --ok-bg:rgba(60,207,110,.14); --warn-bg:rgba(255,70,54,.14);
+  --glass:rgba(42,3,3,.92); --shade:rgba(0,0,0,.6);
   --f-display:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
   --f-body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
   --f-label:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
@@ -26,7 +26,7 @@
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-body{margin:0;min-height:100vh;background:radial-gradient(80% 50% at 100% 0%,rgba(255,122,18,.12),transparent 70%),var(--ink);color:var(--white);font-family:var(--f-body);font-size:16px;line-height:1.45;-webkit-font-smoothing:antialiased}
+body{margin:0;min-height:100vh;background:radial-gradient(80% 50% at 100% 0%,rgba(235,45,45,.12),transparent 70%),var(--ink);color:var(--white);font-family:var(--f-body);font-size:16px;line-height:1.45;-webkit-font-smoothing:antialiased}
 [hidden]{display:none!important}
 img{max-width:100%}
 button,input,select,textarea{font:inherit;color:inherit}
@@ -69,7 +69,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .icon-btn:hover{border-color:var(--mute)}
 
 /* Aviso de modo demonstração */
-.banner{margin-top:16px;border:1px dashed var(--yellow);background:rgba(255,194,26,.07);border-radius:12px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}
+.banner{margin-top:16px;border:1px dashed var(--yellow);background:rgba(255,255,255,.07);border-radius:12px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}
 .banner p{margin:0;flex:1 1 260px;color:var(--white);font-size:.95rem}
 .banner p b{color:var(--yellow)}
 .banner.offline{border-color:var(--red-hot);background:var(--warn-bg)}
@@ -122,7 +122,7 @@ textarea.input{resize:vertical;min-height:90px}
 .live.on{color:var(--ok)}.live.on i{background:var(--ok);box-shadow:0 0 0 0 rgba(60,207,110,.6);animation:livePulse 1.8s infinite}
 @keyframes livePulse{70%{box-shadow:0 0 0 8px rgba(60,207,110,0)}100%{box-shadow:0 0 0 0 rgba(60,207,110,0)}}
 .ped-bar select.input{width:auto;padding:.45em .7em}
-.ativar{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;border:1px solid var(--yellow);background:rgba(255,194,26,.1);border-radius:12px;padding:12px 14px;margin-bottom:14px}
+.ativar{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;border:1px solid var(--yellow);background:rgba(255,255,255,.1);border-radius:12px;padding:12px 14px;margin-bottom:14px}
 .ped-list{display:grid;gap:12px}
 .ped{background:var(--ink-2);border:1px solid var(--line);border-left:5px solid var(--line-2);border-radius:12px;padding:14px 16px;display:grid;gap:10px}
 .ped.novo{border-left-color:var(--yellow);animation:pedIn .5s ease}
@@ -130,7 +130,7 @@ textarea.input{resize:vertical;min-height:90px}
 .ped.concluido{opacity:.62;border-left-color:var(--line-2)}
 .ped.cancelado{opacity:.5;border-left-color:var(--red-hot)}
 .ped.cancelado .ped-itens{text-decoration:line-through}
-@keyframes pedIn{from{transform:translateY(-6px);background:rgba(255,194,26,.18)}}
+@keyframes pedIn{from{transform:translateY(-6px);background:rgba(255,255,255,.18)}}
 .ped-head{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline}
 .ped-head b.cod{font-family:var(--f-display);font-weight:900;font-size:1.7rem;letter-spacing:.02em}
 .ped-head .hora{color:var(--mute);font-variant-numeric:tabular-nums}
@@ -145,6 +145,10 @@ textarea.input{resize:vertical;min-height:90px}
 .ped-itens small{display:block;color:var(--mute)}
 .ped-foot{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .ped-foot .tot{margin-right:auto;font-family:var(--f-display);font-weight:900;font-size:1.35rem}
+.coy{display:inline-flex;align-items:center;gap:6px;font-family:var(--f-label);font-weight:700;letter-spacing:.05em;text-transform:uppercase;font-size:.8rem;padding:.3em .7em;border-radius:7px;background:rgba(74,58,160,.35);color:#d9d3ff;border:1px solid rgba(179,169,255,.4)}
+.coy.erro{background:var(--warn-bg);color:var(--red-hot);border-color:rgba(255,107,107,.45);text-transform:none;letter-spacing:0;font-family:var(--f-body);font-weight:500}
+.btn-coy{background:#4a3aa0;color:#fff}.btn-coy:hover{background:#5a49c0}.btn-coy:disabled{opacity:.45;cursor:not-allowed}
+.chip-coy{font-family:var(--f-label);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:.75rem;padding:.3em .7em;border-radius:999px;border:1px dashed var(--line-2);color:var(--mute)}
 .ped-dica{margin-top:22px;color:var(--mute);font-size:.92rem;max-width:760px}
 .ped-dica summary{cursor:pointer;color:var(--white);font-weight:600}
 .ped-dica code{background:var(--ink-3);padding:.1em .4em;border-radius:5px;color:var(--yellow)}
@@ -167,7 +171,7 @@ textarea.input{resize:vertical;min-height:90px}
 .group-head span{color:var(--mute);font-family:var(--f-label);font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:.85rem}
 .group-head .hidden-tag{color:var(--red-hot)}
 .row{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 0;border-bottom:1px dashed var(--line)}
-.thumb{width:64px;height:64px;border-radius:10px;overflow:hidden;background:radial-gradient(70% 70% at 50% 85%,rgba(255,122,18,.45),transparent 75%),var(--ink-3);display:grid;place-items:center}
+.thumb{width:64px;height:64px;border-radius:10px;overflow:hidden;background:radial-gradient(70% 70% at 50% 85%,rgba(235,45,45,.45),transparent 75%),var(--ink-3);display:grid;place-items:center}
 .thumb img{width:100%;height:100%;object-fit:cover}
 .thumb svg{width:90%;height:auto}
 .nofoto{font-family:var(--f-label);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:.72rem;color:var(--mute);text-align:center;line-height:1.2}
@@ -216,7 +220,7 @@ textarea.input{resize:vertical;min-height:90px}
 .sheet-foot{border-top:1px solid var(--line);padding:14px 18px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .sheet-foot .spacer{flex:1}
 .photo{display:grid;grid-template-columns:150px minmax(0,1fr);gap:14px;align-items:center}
-.photo-box{position:relative;width:150px;aspect-ratio:1;border-radius:12px;overflow:hidden;border:2px dashed var(--line-2);background:radial-gradient(70% 70% at 50% 85%,rgba(255,122,18,.45),transparent 75%),var(--ink-3);display:grid;place-items:center;cursor:pointer}
+.photo-box{position:relative;width:150px;aspect-ratio:1;border-radius:12px;overflow:hidden;border:2px dashed var(--line-2);background:radial-gradient(70% 70% at 50% 85%,rgba(235,45,45,.45),transparent 75%),var(--ink-3);display:grid;place-items:center;cursor:pointer}
 .photo-box.drag{border-color:var(--yellow)}
 .photo-box img{width:100%;height:100%;object-fit:cover}
 .photo-box svg{width:88%;height:auto}
@@ -298,6 +302,8 @@ textarea.input{resize:vertical;min-height:90px}
         <span class="live" id="pedLive"><i></i><span id="pedLiveTxt">Conectando…</span></span>
         <span class="grow"></span>
         <label class="switch"><input type="checkbox" id="pedAuto"><span class="track"></span><span class="txt">Imprimir sozinho</span></label>
+        <label class="switch" id="coyAutoWrap" hidden title="Quando chegar um pedido de entrega, chama o motoboy da Coyotes na hora"><input type="checkbox" id="coyAuto"><span class="track"></span><span class="txt">Chamar Coyotes sozinho</span></label>
+        <span class="chip-coy" id="coyChip" title="Falta a chave de acesso da Coyotes">Coyotes: aguardando ativação</span>
         <label class="switch"><input type="checkbox" id="pedSom"><span class="track"></span><span class="txt">Som</span></label>
         <select class="input" id="pedPapel" aria-label="Largura do papel">
           <option value="80">Papel 80mm</option><option value="58">Papel 58mm</option><option value="a4">Folha A4</option>
@@ -313,6 +319,7 @@ textarea.input{resize:vertical;min-height:90px}
           <li>Abra o painel pelo arquivo <code>abrir-painel-comandas.bat</code> que vem junto do site (dois cliques). Ele abre o Chrome no modo de impressão direta.</li>
           <li>Entre com seu e-mail e senha uma vez e deixe essa janela aberta. Cada pedido novo sai impresso sozinho.</li>
         </ol>
+        <p><b>Entrega pela Coyotes:</b> quando a integração estiver ativada, os pedidos de entrega mostram o botão <b>Chamar motoboy Coyotes</b>, e dá para ligar <b>Chamar Coyotes sozinho</b> para pedir o motoboy assim que o pedido chega.</p>
         <p>Se abrir o painel pelo Chrome normal, a comanda também sai, mas o Chrome mostra a janela de impressão e é preciso clicar em <b>Imprimir</b>.</p>
       </details>
     </div>
@@ -1193,6 +1200,19 @@ function art(a, label){
       return ()=>sb.removeChannel(canal);
     },
 
+    /* ---- Entrega pela Coyotes (função segura no servidor) ---- */
+    async coyotes(acao,pedidoId){
+      if(!temSupabase) return { configurado:false, demo:true };
+      await pronto();
+      const { data, error } = await sb.functions.invoke("coyotes-entrega",{ body:{ acao, pedido_id:pedidoId } });
+      if(error){
+        let msg=error.message;
+        try{ const j=await error.context.json(); msg=j.erro||msg; if(j.configurado===false) return { configurado:false, erro:msg }; }catch(_){}
+        throw new Error(msg);
+      }
+      return data;
+    },
+
     /* ---- Demonstração ---- */
     restaurarDemo(){ try{ localStorage.removeItem(DEMO_KEY); }catch(e){} }
   };
@@ -1585,6 +1605,7 @@ hr{border:0;border-top:1px dashed #000;margin:2mm 0}
 <div class="tipo">${p.tipo==="Entrega"?"ENTREGA":"RETIRADA NO LOCAL"}</div>
 <div><span class="k">Cliente:</span> ${esc(p.cliente)}</div>
 ${p.tipo==="Entrega"?`<div><span class="k">Endereço:</span> ${esc(p.endereco||"")}</div>`:""}
+${p.telefone?`<div><span class="k">Telefone:</span> ${esc(p.telefone)}</div>`:""}
 <div><span class="k">Pagamento:</span> ${pag2}</div>
 <hr>${itens}<hr>
 <div class="l"><span class="k">Subtotal</span><span>${brl(p.subtotal)}</span></div>
@@ -1629,6 +1650,7 @@ async function buscarPedidos(){
   // pedidos que chegaram agora: som + impressão automática
   const paraImprimir=novos.filter(p=>p.status==="novo" && !jaImpressos.has(p.id) && (!primeiraVez || Date.now()-new Date(p.criado_em)<30*60e3));
   if(!primeiraVez && novos.some(p=>p.status==="novo")){ tocar(); piscarTitulo(novos.length); }
+  if(!primeiraVez && coyOn && $("#coyAuto").checked) novos.filter(p=>p.tipo==="Entrega" && p.status==="novo" && !p.entrega_id).forEach(p=>chamarCoyotes(p,null));
   if($("#pedAuto").checked && paraImprimir.length){
     if(!pedAtivo){ $("#pedAtivar").hidden=false; return; }
     for(const p of paraImprimir.reverse()) await imprimirPedido(p,false);
@@ -1648,10 +1670,11 @@ function renderPedidos(){
   if(!PED.length){ $("#pedList").innerHTML=`<div class="empty">Nenhum pedido hoje ainda.<br>Quando um cliente enviar pelo site, ele aparece aqui na hora.</div>`; return; }
   $("#pedList").innerHTML=PED.map(p=>`<article class="ped ${esc(p.status)}" data-id="${p.id}">
     <div class="ped-head"><b class="cod">#${esc(p.codigo)}</b><span class="hora">${hora(p.criado_em)}</span><b>${esc(p.cliente)}</b><span class="st">${ST[p.status]||p.status}</span></div>
-    <div class="ped-info"><div><span>Tipo:</span> <b>${esc(p.tipo)}</b></div>${p.tipo==="Entrega"?`<div><span>Endereço:</span> <b>${esc(p.endereco||"")}</b></div>`:""}<div><span>Pagamento:</span> <b>${esc(p.pagamento)}${p.troco?` (troco p/ R$ ${esc(p.troco)})`:""}</b></div></div>
+    <div class="ped-info"><div><span>Tipo:</span> <b>${esc(p.tipo)}</b></div>${p.tipo==="Entrega"?`<div><span>Endereço:</span> <b>${esc(p.endereco||"")}</b></div>`:""}${p.telefone?`<div><span>Telefone:</span> <b>${esc(p.telefone)}</b></div>`:""}<div><span>Pagamento:</span> <b>${esc(p.pagamento)}${p.troco?` (troco p/ R$ ${esc(p.troco)})`:""}</b></div></div>
     <ul class="ped-itens">${(p.itens||[]).map(i=>`<li><span>${i.q}x ${esc(i.nome)}${(i.adicionais||[]).length?`<small>+ ${i.adicionais.map(a=>(a.q>1?a.q+"x ":"")+esc(a.nome)).join(", ")}</small>`:""}${i.obs?`<small>Obs: ${esc(i.obs)}</small>`:""}</span><span class="num">${brl(i.total)}</span></li>`).join("")}</ul>
     ${p.observacoes?`<div class="ped-info"><div><span>Observações:</span> <b>${esc(p.observacoes)}</b></div></div>`:""}
     <div class="ped-foot"><span class="tot num">${brl(p.subtotal)}${p.tipo==="Entrega"?' <small style="font-size:.55em;color:var(--mute)">+ entrega</small>':""}</span>
+      ${coyBotao(p)}
       <button class="btn btn-yellow btn-sm" data-ac="imprimir">${p.status==="novo"?"Imprimir comanda":"Reimprimir"}</button>
       ${p.status!=="concluido"&&p.status!=="cancelado"?`<button class="btn btn-ghost btn-sm" data-ac="concluir">Concluir</button><button class="btn btn-danger btn-sm" data-ac="cancelar">Cancelar</button>`:`<button class="btn btn-ghost btn-sm" data-ac="reabrir">Reabrir</button>`}
     </div></article>`).join("");
@@ -1661,6 +1684,7 @@ $("#pedList").addEventListener("click",async e=>{
   const p=PED.find(x=>String(x.id)===b.closest(".ped").dataset.id); if(!p) return;
   const ac=b.dataset.ac;
   if(ac==="imprimir"){ await imprimirPedido(p,true); return; }
+  if(ac==="coyotes"){ await chamarCoyotes(p,b); return; }
   if(ac==="cancelar" && !b.classList.contains("armed")){ b.classList.add("armed"); b.textContent="Confirmar?"; setTimeout(()=>{ b.classList.remove("armed"); b.textContent="Cancelar"; },3500); return; }
   const novo={concluir:"concluido",cancelar:"cancelado",reabrir:p.impresso_em?"impresso":"novo"}[ac];
   await acao(b,()=>MB.marcarPedido(p.id,{status:novo})); p.status=novo; renderPedidos();
@@ -1673,6 +1697,7 @@ $("#pedTeste").addEventListener("click",()=>{
 });
 async function iniciarPedidos(){
   if(pedParar) return;
+  MB.coyotes("status").then(r=>{ coyOn=!!(r&&r.configurado); $("#coyAutoWrap").hidden=!coyOn; $("#coyChip").hidden=coyOn; renderPedidos(); }).catch(()=>{});
   await buscarPedidos();
   try{
     pedParar=await MB.ouvirPedidos(()=>buscarPedidos());
@@ -1680,6 +1705,28 @@ async function iniciarPedidos(){
   }catch(e){ $("#pedLiveTxt").textContent="Atualizando a cada 15 s"; }
   clearInterval(pedTimer); pedTimer=setInterval(buscarPedidos,15000);   // garantia, caso o aviso ao vivo caia
   if(!pedAtivo && $("#pedAuto").checked) $("#pedAtivar").hidden=false;
+}
+
+/* ---------- Coyotes (motoboy) ---------- */
+let coyOn=false;
+$("#coyAuto").checked=PREF.get("coyauto",false);
+$("#coyAuto").addEventListener("change",e=>{ PREF.set("coyauto",e.target.checked); toast(e.target.checked?"Coyotes será chamada sozinha nos pedidos de entrega":"Chamada automática da Coyotes desligada"); });
+function coyBotao(p){
+  if(p.tipo!=="Entrega" || p.status==="cancelado") return "";
+  if(p.entrega_id) return `<span class="coy">🛵 Coyotes chamada · nº ${esc(p.entrega_id)}</span>`;
+  const erro=p.entrega_status==="erro"?`<span class="coy erro" title="${esc(p.entrega_erro||"")}">Coyotes: ${esc((p.entrega_erro||"erro").slice(0,60))}</span>`:"";
+  return erro+`<button class="btn btn-coy btn-sm" data-ac="coyotes" ${coyOn?"":'disabled title="Falta ativar a integração com a Coyotes"'}>${p.entrega_status==="erro"?"Tentar Coyotes de novo":"Chamar motoboy Coyotes"}</button>`;
+}
+const chamando=new Set();
+async function chamarCoyotes(p,btn){
+  if(chamando.has(p.id) || p.entrega_id) return; chamando.add(p.id);
+  if(btn){ btn.disabled=true; btn.textContent="Chamando…"; }
+  try{
+    const r=await MB.coyotes("chamar",p.id);
+    if(r && r.entrega_id){ p.entrega_id=r.entrega_id; p.entrega_status="solicitada"; toast("Motoboy da Coyotes chamado para o pedido #"+p.codigo); }
+    else if(r && r.configurado===false){ toast("Integração com a Coyotes ainda não ativada.",true); }
+  }catch(e){ p.entrega_status="erro"; p.entrega_erro=e.message; toast(e.message,true); }
+  finally{ chamando.delete(p.id); renderPedidos(); }
 }
 
 iniciar();
