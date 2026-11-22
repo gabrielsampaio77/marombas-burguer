@@ -4,4 +4,4 @@ Disallow: /admin.html
 Disallow: /painel
 Disallow: /obrigado.html
 
-Sitemap: https://marombas-burguer.vercel.app/sitemap.xml
+Sitemap: https://blend-hamburgueria.vercel.app/sitemap.xml

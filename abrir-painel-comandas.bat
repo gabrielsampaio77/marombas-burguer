@@ -1,7 +1,7 @@
 @echo off
 rem Abre o painel de pedidos no Chrome com impressao direta (sem janela de impressao).
 rem A comanda sai na IMPRESSORA PADRAO do Windows.
-set URL=https://marombas-burguer.vercel.app/admin.html
+set URL=https://blend-hamburgueria.vercel.app/admin.html
 set PERFIL=%LOCALAPPDATA%\MarombasPainel
 set CHROME=%ProgramFiles%\Google\Chrome\Application\chrome.exe
 if not exist "%CHROME%" set CHROME=%ProgramFiles(x86)%\Google\Chrome\Application\chrome.exe
