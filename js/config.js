@@ -1,5 +1,5 @@
 /* =====================================================================
-   MAROMBAS BURGER – CONEXÃO COM O BANCO DE DADOS (Supabase)
+   BLEND HAMBURGUERIA – CONEXÃO COM O BANCO DE DADOS (Supabase)
    ---------------------------------------------------------------------
    JÁ CONECTADO ao projeto "marombas-burger" (São Paulo).
    Se um dia trocar de projeto, copie de Project Settings → API:

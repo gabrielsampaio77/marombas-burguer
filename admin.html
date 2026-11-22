@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Painel Marombas</title>
-<meta name="description" content="Área restrita do lojista para gerenciar cardápio, fotos e dados da Marombas Burger.">
+<title>Painel Blend</title>
+<meta name="description" content="Área restrita do lojista para gerenciar cardápio, fotos e dados da Blend Hamburgueria.">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#2a0303">
 <link rel="icon" href="favicon.png" type="image/png" sizes="48x48">
@@ -44,6 +44,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .top .wrap{display:flex;align-items:center;gap:12px;min-height:62px;flex-wrap:wrap;padding-block:8px}
 .brand{display:flex;align-items:center;gap:10px;margin-right:auto;text-decoration:none}
 .brand img{display:block;height:44px;width:auto;flex:none}
+.wordmark{display:flex;flex-direction:column;line-height:.85}.wordmark b{font-family:var(--f-display);font-weight:900;font-size:1.55rem;text-transform:uppercase;letter-spacing:.02em}.wordmark small{font-family:var(--f-label);font-weight:700;letter-spacing:.28em;text-transform:uppercase;font-size:.62rem;color:var(--red-hot);margin-top:3px}
 .brand b{display:block;font-family:var(--f-display);font-weight:900;font-size:1.3rem;line-height:.9;text-transform:uppercase}
 .brand small{display:block;font-family:var(--f-label);font-weight:700;letter-spacing:.24em;color:var(--fire);font-size:.72rem}
 .chip-mode{font-family:var(--f-label);font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:.75rem;padding:.3em .7em;border-radius:999px;border:1px solid var(--line-2);color:var(--mute)}
@@ -257,7 +258,7 @@ textarea.input{resize:vertical;min-height:90px}
 <header class="top">
   <div class="wrap">
     <a class="brand" href="index.html" title="Ver o site">
-      <img src="img/logo.webp" alt="Marombas Burger" width="110" height="43"><small>PAINEL</small>
+      <span class="wordmark"><b>Blend</b><small>Hamburgueria</small></span><small>PAINEL</small>
     </a>
     <span class="chip-mode" id="modeChip"></span>
     <span class="who" id="who" hidden></span>
@@ -281,7 +282,7 @@ textarea.input{resize:vertical;min-height:90px}
     <form class="login-card" id="loginForm" novalidate>
       <div class="label">Área do lojista</div>
       <h1>Entrar no painel</h1>
-      <p>Use o e-mail e a senha cadastrados para o dono da Marombas Burger.</p>
+      <p>Use o e-mail e a senha cadastrados para o dono da Blend Hamburgueria.</p>
       <label class="field" for="lEmail"><span>E-mail</span><input class="input" id="lEmail" type="email" autocomplete="username" required></label>
       <label class="field" for="lSenha"><span>Senha</span><input class="input" id="lSenha" type="password" autocomplete="current-password" required></label>
       <p class="err" id="loginErr" role="alert"></p>
@@ -449,7 +450,7 @@ textarea.input{resize:vertical;min-height:90px}
 
 <script src="js/config.js"></script>
 <script>
-/* Marombas Burger – ilustrações dos produtos (usadas quando o produto não tem foto) */
+/* Blend Hamburgueria – ilustrações dos produtos (usadas quando o produto não tem foto) */
 /* =====================================================================
    ILUSTRAÇÕES DOS PRODUTOS (SVG desenhado no código)
    Quando o produto tem foto cadastrada no painel, a foto é usada no lugar.
@@ -539,7 +540,7 @@ function art(a, label){
 </script>
 <script>
 /* =====================================================================
-   MAROMBAS BURGER – CAMADA DE DADOS
+   BLEND HAMBURGUERIA – CAMADA DE DADOS
    Usada pelo site (index.html) e pelo painel (admin.html).
    - Com o Supabase configurado em js/config.js: lê e grava no banco.
    - Sem configuração: MODO DEMONSTRAÇÃO, salvando no navegador.
@@ -550,7 +551,7 @@ function art(a, label){
   /* Dados iniciais (os mesmos que o banco.sql cadastra) */
   const SEED = {
     config: {
-      nome: "Marombas Burger",
+      nome: "Blend Hamburgueria",
       whatsapp: "5569999293397",
       telefone: "(69) 99929-3397",
       endereco: "Rua Aruba, 8739 – Socialista",
@@ -1056,7 +1057,7 @@ function art(a, label){
         return d;
       }catch(e){
         const cache=ls.get(CACHE_KEY);
-        console.warn("[Marombas] Usando cópia salva do cardápio:", e.message);
+        console.warn("[Blend] Usando cópia salva do cardápio:", e.message);
         if(cache) return {...ordenar(cache), offline:true};
         throw erroAmigavel(e);
       }
@@ -1168,7 +1169,7 @@ function art(a, label){
 
     /* ---- Configurações da loja ---- */
     async salvarConfig(c){
-      const limpo={ nome:(c.nome||"").trim()||"Marombas Burger", whatsapp:(c.whatsapp||"").replace(/\D/g,""),
+      const limpo={ nome:(c.nome||"").trim()||"Blend Hamburgueria", whatsapp:(c.whatsapp||"").replace(/\D/g,""),
         telefone:(c.telefone||"").trim(), endereco:(c.endereco||"").trim(), cidade:(c.cidade||"").trim(),
         taxa_entrega:null,   // taxa informada pelo WhatsApp
         horario:(c.horario||"").trim(), tempo_resposta:(c.tempo_resposta||"").trim() };
@@ -1199,8 +1200,8 @@ function art(a, label){
       // fetch com keepalive: o envio termina mesmo se a página mudar logo em seguida
       const url=cfg.supabaseUrl.trim().replace(/\/$/,"")+"/rest/v1/pedidos", k=cfg.supabaseAnonKey.trim();
       return fetch(url,{ method:"POST", keepalive:true, headers:{ "apikey":k, "Authorization":"Bearer "+k, "Content-Type":"application/json", "Prefer":"return=minimal" }, body:JSON.stringify(linha) })
-        .then(r=>{ if(!r.ok) return r.text().then(t=>{ console.warn("[Marombas] Pedido não registrado:",t); return false; }); return true; })
-        .catch(e=>{ console.warn("[Marombas] Pedido não registrado:",e.message); return false; });
+        .then(r=>{ if(!r.ok) return r.text().then(t=>{ console.warn("[Blend] Pedido não registrado:",t); return false; }); return true; })
+        .catch(e=>{ console.warn("[Blend] Pedido não registrado:",e.message); return false; });
     },
     async listarPedidos(desdeISO){
       if(!temSupabase) return (ls.get(PED_KEY)||[]).filter(p=>p.criado_em>=desdeISO);
@@ -1623,7 +1624,7 @@ hr{border:0;border-top:1px dashed #000;margin:2mm 0}
 .k{font-weight:400}.tipo{font-size:1.25em;font-weight:900;border:2px solid #000;padding:1mm;margin:1.5mm 0;text-align:center}
 .tot{font-size:1.3em;font-weight:900}
 </style></head><body>
-<div class="c loja">MAROMBA'S BURGUER</div>
+<div class="c loja">${esc((D.config.nome||"Blend Hamburgueria").toUpperCase())}</div>
 <div class="c k">${esc(D.config.telefone||"")}</div>
 <hr><div class="c">PEDIDO</div><div class="c big">#${esc(p.codigo)}</div>
 <div class="c k">${dataHora(p.criado_em)}</div>
@@ -1782,7 +1783,7 @@ $("#senhaBox").addEventListener("submit",async e=>{
 function textoCoyotes(p){
   const c=D.config||{};
   return [
-    `🛵 ENTREGA – ${c.nome||"Marombas Burger"} – Pedido #${p.codigo}`,
+    `🛵 ENTREGA – ${c.nome||"Blend Hamburgueria"} – Pedido #${p.codigo}`,
     ``,
     `📍 RETIRADA: ${c.endereco||""}${c.cidade?", "+c.cidade:""}`,
     `🏠 ENTREGA: ${p.endereco||""}`,
