@@ -1279,15 +1279,21 @@ function art(a, label){
         "ativo": true
       },
       {
+        "id": "pasteis",
+        "nome": "Pastéis",
+        "ordem": 3,
+        "ativo": true
+      },
+      {
         "id": "bebidas",
         "nome": "Bebidas",
-        "ordem": 3,
+        "ordem": 4,
         "ativo": true
       },
       {
         "id": "adicionais",
         "nome": "Adicionais",
-        "ordem": 4,
+        "ordem": 5,
         "ativo": true
       }
     ],
@@ -1498,6 +1504,19 @@ function art(a, label){
         },
         "ativo": true,
         "ordem": 2
+      },
+      {
+        "id": "pastel-feira",
+        "cat": "pasteis",
+        "nome": "Pastel de feira",
+        "desc": "Pastel de feira sequinho e crocante, frito na hora. Informe o sabor nas observações.",
+        "spec": "Frito na hora",
+        "preco": 6.0,
+        "badge": "",
+        "img": "img/fotos/pastel-feira.webp",
+        "art": { "type": "fries" },
+        "ativo": true,
+        "ordem": 0
       },
       {
         "id": "refri-lata",
@@ -2293,7 +2312,7 @@ function abrirProduto(id,fromHash){
   $("#ppExtras").innerHTML=temAd?ADICIONAIS.map(a=>`<div class="pp-extra"><span class="pp-ex-name">${esc(nomeAdic(a))}</span><span class="pp-ex-price num">+ ${money(a.preco)}</span>
     <div class="stepper sm" role="group" aria-label="Quantidade de ${esc(nomeAdic(a))}"><button type="button" data-exdec="${esc(a.id)}" aria-label="Tirar ${esc(nomeAdic(a))}">−</button><span class="num" data-exq="${esc(a.id)}">0</span><button type="button" data-exinc="${esc(a.id)}" aria-label="Adicionar ${esc(nomeAdic(a))}">+</button></div></div>`).join(""):"";
   $("#ppObs").value="";
-  $("#ppObs").placeholder = id==="gym-bro" ? "Ex.: 2 Cupim Musculoso, sem cebola" : p.cat==="bebidas" ? "Ex.: sabor do refrigerante" : p.cat==="porcoes" ? "Ex.: bem sequinha" : "Ex.: sem cebola, carne bem passada";
+  $("#ppObs").placeholder = id==="gym-bro" ? "Ex.: 2 Cupim Musculoso, sem cebola" : p.cat==="bebidas" ? "Ex.: sabor do refrigerante" : p.cat==="porcoes" ? "Ex.: bem sequinha" : p.cat==="pasteis" ? "Ex.: 1 de carne e 1 de queijo" : "Ex.: sem cebola, carne bem passada";
   ppRender();
   $("#pp").classList.add("open"); $("#ppOverlay").classList.add("open"); $("#pp").setAttribute("aria-hidden","false");
   document.body.style.overflow="hidden"; $("#ppScroll").scrollTop=0;
