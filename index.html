@@ -1285,15 +1285,27 @@ function art(a, label){
         "ativo": true
       },
       {
+        "id": "salgados",
+        "nome": "Salgados",
+        "ordem": 4,
+        "ativo": true
+      },
+      {
+        "id": "bolos",
+        "nome": "Bolos caseiros",
+        "ordem": 5,
+        "ativo": true
+      },
+      {
         "id": "bebidas",
         "nome": "Bebidas",
-        "ordem": 4,
+        "ordem": 6,
         "ativo": true
       },
       {
         "id": "adicionais",
         "nome": "Adicionais",
-        "ordem": 5,
+        "ordem": 7,
         "ativo": true
       }
     ],
@@ -1623,12 +1635,147 @@ function art(a, label){
         "ordem": 8
       },
       {
+        "id": "coxinha",
+        "cat": "salgados",
+        "nome": "Coxinha",
+        "desc": "Coxinha de frango desfiado, sequinha e crocante.",
+        "spec": "Frango",
+        "preco": 5.0,
+        "badge": "",
+        "img": "img/fotos/coxinha.webp",
+        "art": {
+          "type": "fries"
+        },
+        "ativo": true,
+        "ordem": 0
+      },
+      {
+        "id": "salgado-carne",
+        "cat": "salgados",
+        "nome": "Pastel empanado de carne",
+        "desc": "Salgado empanado e crocante, recheado com carne moída temperada.",
+        "spec": "Carne",
+        "preco": 5.0,
+        "badge": "",
+        "img": "img/fotos/pastel-empanado.webp",
+        "art": {
+          "type": "fries"
+        },
+        "ativo": true,
+        "ordem": 1
+      },
+      {
+        "id": "salgado-presunto-queijo",
+        "cat": "salgados",
+        "nome": "Pastel empanado de presunto e queijo",
+        "desc": "Salgado empanado e crocante, recheado com presunto e queijo.",
+        "spec": "Presunto e queijo",
+        "preco": 5.0,
+        "badge": "",
+        "img": "img/fotos/pastel-empanado.webp",
+        "art": {
+          "type": "fries"
+        },
+        "ativo": true,
+        "ordem": 2
+      },
+      {
+        "id": "bolo-vulcao",
+        "cat": "bolos",
+        "nome": "Bolo caseirinho vulcão (fatia)",
+        "desc": "Fatia de bolo caseiro vulcão. Sabores: chocolate, cenoura, milho cremoso, laranja, coco, limão, banana com canela, formigueiro, fubá, ninho, mesclado, caroço e leite. Informe o sabor nas observações.",
+        "spec": "Fatia",
+        "preco": 3.5,
+        "badge": "",
+        "img": "",
+        "art": {
+          "type": "fries"
+        },
+        "ativo": true,
+        "ordem": 0
+      },
+      {
+        "id": "guarana-200ml",
+        "cat": "bebidas",
+        "nome": "Guaraná Antarctica 200ml",
+        "desc": "Garrafinha de 200ml.",
+        "spec": "200ml",
+        "preco": 3.0,
+        "badge": "",
+        "img": "img/fotos/guarana-200ml.webp",
+        "art": {
+          "type": "can"
+        },
+        "ativo": true,
+        "ordem": 1
+      },
+      {
+        "id": "guarana-lata",
+        "cat": "bebidas",
+        "nome": "Guaraná Antarctica lata",
+        "desc": "Lata de 269ml.",
+        "spec": "269ml",
+        "preco": 5.0,
+        "badge": "",
+        "img": "img/fotos/guarana-lata.webp",
+        "art": {
+          "type": "can"
+        },
+        "ativo": true,
+        "ordem": 2
+      },
+      {
+        "id": "guarana-1l",
+        "cat": "bebidas",
+        "nome": "Guaraná Antarctica 1 litro",
+        "desc": "Garrafa de 1 litro.",
+        "spec": "1 litro",
+        "preco": 8.0,
+        "badge": "",
+        "img": "img/fotos/guarana-1l.webp",
+        "art": {
+          "type": "can"
+        },
+        "ativo": true,
+        "ordem": 3
+      },
+      {
+        "id": "coca-1l-retornavel",
+        "cat": "bebidas",
+        "nome": "Coca-Cola 1 litro retornável",
+        "desc": "Coca-Cola 1 litro em garrafa retornável.",
+        "spec": "1 litro",
+        "preco": 10.0,
+        "badge": "",
+        "img": "",
+        "art": {
+          "type": "can"
+        },
+        "ativo": true,
+        "ordem": 4
+      },
+      {
+        "id": "coca-litro",
+        "cat": "bebidas",
+        "nome": "Coca-Cola litro",
+        "desc": "Coca-Cola em garrafa de litro.",
+        "spec": "Litro",
+        "preco": 10.0,
+        "badge": "",
+        "img": "",
+        "art": {
+          "type": "can"
+        },
+        "ativo": true,
+        "ordem": 5
+      },
+      {
         "id": "refri-lata",
         "cat": "bebidas",
         "nome": "Refrigerante lata",
-        "desc": "Lata 350ml: Coca-Cola, Coca Zero, Fanta Laranja ou Fanta Uva. Informe o sabor nas observações.",
+        "desc": "Lata 350ml: Coca-Cola, Coca Zero, Fanta Laranja, Fanta Uva, Sprite, Guaraná Jesus ou Guaraná Kuat. Informe o sabor nas observações.",
         "spec": "Lata",
-        "preco": 8.0,
+        "preco": 6.0,
         "badge": "",
         "img": "img/ilustrativas/refri-lata-v2.webp",
         "art": {
@@ -2416,7 +2563,7 @@ function abrirProduto(id,fromHash){
   $("#ppExtras").innerHTML=temAd?ADICIONAIS.map(a=>`<div class="pp-extra"><span class="pp-ex-name">${esc(nomeAdic(a))}</span><span class="pp-ex-price num">+ ${money(a.preco)}</span>
     <div class="stepper sm" role="group" aria-label="Quantidade de ${esc(nomeAdic(a))}"><button type="button" data-exdec="${esc(a.id)}" aria-label="Tirar ${esc(nomeAdic(a))}">−</button><span class="num" data-exq="${esc(a.id)}">0</span><button type="button" data-exinc="${esc(a.id)}" aria-label="Adicionar ${esc(nomeAdic(a))}">+</button></div></div>`).join(""):"";
   $("#ppObs").value="";
-  $("#ppObs").placeholder = id==="gym-bro" ? "Ex.: 2 Cupim Musculoso, sem cebola" : p.cat==="bebidas" ? "Ex.: Coca Zero" : p.cat==="porcoes" ? "Ex.: bem sequinha" : id==="pastel-feira" ? "Ex.: 1 de carne e 1 de queijo" : p.cat==="pasteis" ? "Ex.: bem sequinho" : "Ex.: sem cebola, carne bem passada";
+  $("#ppObs").placeholder = id==="gym-bro" ? "Ex.: 2 Cupim Musculoso, sem cebola" : p.cat==="bebidas" ? "Ex.: Coca Zero" : p.cat==="porcoes" ? "Ex.: bem sequinha" : id==="pastel-feira" ? "Ex.: 1 de carne e 1 de queijo" : p.cat==="pasteis" ? "Ex.: bem sequinho" : p.cat==="bolos" ? "Ex.: sabor chocolate" : p.cat==="salgados" ? "Ex.: bem quentinho" : "Ex.: sem cebola, carne bem passada";
   ppRender();
   $("#pp").classList.add("open"); $("#ppOverlay").classList.add("open"); $("#pp").setAttribute("aria-hidden","false");
   document.body.style.overflow="hidden"; $("#ppScroll").scrollTop=0;

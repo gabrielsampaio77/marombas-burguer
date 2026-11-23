@@ -105,6 +105,8 @@ textarea.input{resize:vertical;min-height:90px}
 .switch input:checked + .track{background:var(--ok)}
 .switch input:checked + .track::after{transform:translateX(20px)}
 .switch input:focus-visible + .track{outline:3px solid var(--yellow);outline-offset:2px}
+.sw-txt{min-width:9.5em}
+.row.off .sw-txt{color:var(--red-hot)}
 .switch .txt{font-family:var(--f-label);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:.85rem}
 
 /* Abas */
@@ -586,15 +588,27 @@ function art(a, label){
         "ativo": true
       },
       {
+        "id": "salgados",
+        "nome": "Salgados",
+        "ordem": 4,
+        "ativo": true
+      },
+      {
+        "id": "bolos",
+        "nome": "Bolos caseiros",
+        "ordem": 5,
+        "ativo": true
+      },
+      {
         "id": "bebidas",
         "nome": "Bebidas",
-        "ordem": 4,
+        "ordem": 6,
         "ativo": true
       },
       {
         "id": "adicionais",
         "nome": "Adicionais",
-        "ordem": 5,
+        "ordem": 7,
         "ativo": true
       }
     ],
@@ -924,12 +938,147 @@ function art(a, label){
         "ordem": 8
       },
       {
+        "id": "coxinha",
+        "cat": "salgados",
+        "nome": "Coxinha",
+        "desc": "Coxinha de frango desfiado, sequinha e crocante.",
+        "spec": "Frango",
+        "preco": 5.0,
+        "badge": "",
+        "img": "img/fotos/coxinha.webp",
+        "art": {
+          "type": "fries"
+        },
+        "ativo": true,
+        "ordem": 0
+      },
+      {
+        "id": "salgado-carne",
+        "cat": "salgados",
+        "nome": "Pastel empanado de carne",
+        "desc": "Salgado empanado e crocante, recheado com carne moída temperada.",
+        "spec": "Carne",
+        "preco": 5.0,
+        "badge": "",
+        "img": "img/fotos/pastel-empanado.webp",
+        "art": {
+          "type": "fries"
+        },
+        "ativo": true,
+        "ordem": 1
+      },
+      {
+        "id": "salgado-presunto-queijo",
+        "cat": "salgados",
+        "nome": "Pastel empanado de presunto e queijo",
+        "desc": "Salgado empanado e crocante, recheado com presunto e queijo.",
+        "spec": "Presunto e queijo",
+        "preco": 5.0,
+        "badge": "",
+        "img": "img/fotos/pastel-empanado.webp",
+        "art": {
+          "type": "fries"
+        },
+        "ativo": true,
+        "ordem": 2
+      },
+      {
+        "id": "bolo-vulcao",
+        "cat": "bolos",
+        "nome": "Bolo caseirinho vulcão (fatia)",
+        "desc": "Fatia de bolo caseiro vulcão. Sabores: chocolate, cenoura, milho cremoso, laranja, coco, limão, banana com canela, formigueiro, fubá, ninho, mesclado, caroço e leite. Informe o sabor nas observações.",
+        "spec": "Fatia",
+        "preco": 3.5,
+        "badge": "",
+        "img": "",
+        "art": {
+          "type": "fries"
+        },
+        "ativo": true,
+        "ordem": 0
+      },
+      {
+        "id": "guarana-200ml",
+        "cat": "bebidas",
+        "nome": "Guaraná Antarctica 200ml",
+        "desc": "Garrafinha de 200ml.",
+        "spec": "200ml",
+        "preco": 3.0,
+        "badge": "",
+        "img": "img/fotos/guarana-200ml.webp",
+        "art": {
+          "type": "can"
+        },
+        "ativo": true,
+        "ordem": 1
+      },
+      {
+        "id": "guarana-lata",
+        "cat": "bebidas",
+        "nome": "Guaraná Antarctica lata",
+        "desc": "Lata de 269ml.",
+        "spec": "269ml",
+        "preco": 5.0,
+        "badge": "",
+        "img": "img/fotos/guarana-lata.webp",
+        "art": {
+          "type": "can"
+        },
+        "ativo": true,
+        "ordem": 2
+      },
+      {
+        "id": "guarana-1l",
+        "cat": "bebidas",
+        "nome": "Guaraná Antarctica 1 litro",
+        "desc": "Garrafa de 1 litro.",
+        "spec": "1 litro",
+        "preco": 8.0,
+        "badge": "",
+        "img": "img/fotos/guarana-1l.webp",
+        "art": {
+          "type": "can"
+        },
+        "ativo": true,
+        "ordem": 3
+      },
+      {
+        "id": "coca-1l-retornavel",
+        "cat": "bebidas",
+        "nome": "Coca-Cola 1 litro retornável",
+        "desc": "Coca-Cola 1 litro em garrafa retornável.",
+        "spec": "1 litro",
+        "preco": 10.0,
+        "badge": "",
+        "img": "",
+        "art": {
+          "type": "can"
+        },
+        "ativo": true,
+        "ordem": 4
+      },
+      {
+        "id": "coca-litro",
+        "cat": "bebidas",
+        "nome": "Coca-Cola litro",
+        "desc": "Coca-Cola em garrafa de litro.",
+        "spec": "Litro",
+        "preco": 10.0,
+        "badge": "",
+        "img": "",
+        "art": {
+          "type": "can"
+        },
+        "ativo": true,
+        "ordem": 5
+      },
+      {
         "id": "refri-lata",
         "cat": "bebidas",
         "nome": "Refrigerante lata",
-        "desc": "Lata 350ml: Coca-Cola, Coca Zero, Fanta Laranja ou Fanta Uva. Informe o sabor nas observações.",
+        "desc": "Lata 350ml: Coca-Cola, Coca Zero, Fanta Laranja, Fanta Uva, Sprite, Guaraná Jesus ou Guaraná Kuat. Informe o sabor nas observações.",
         "spec": "Lata",
-        "preco": 8.0,
+        "preco": 6.0,
         "badge": "",
         "img": "img/ilustrativas/refri-lata-v2.webp",
         "art": {
@@ -1502,7 +1651,7 @@ function renderProdutos(){
             <div class="meta"><span class="price num">${money(p.preco)}</span>${p.spec?`<span>${esc(p.spec)}</span>`:""}${p.badge?`<span class="tag">${esc(p.badge)}</span>`:""}${p.img?'<span class="tag photo">Foto</span>':""}${p.ativo?"":'<span class="tag out">Esgotado</span>'}</div>
           </div>
           <div class="row-actions">
-            <label class="switch" title="Disponível no cardápio"><input type="checkbox" data-toggle="${esc(p.id)}" ${p.ativo?"checked":""} aria-label="${esc(p.nome)} disponível"><span class="track"></span></label>
+            <label class="switch" title="Ligado: aparece no site. Desligado: some do site (não apaga)."><input type="checkbox" data-toggle="${esc(p.id)}" ${p.ativo?"checked":""} aria-label="${esc(p.nome)} no cardápio"><span class="track"></span><span class="txt sw-txt">${p.ativo?"No cardápio":"Fora do cardápio"}</span></label>
             <span class="order">${busca?"":`<button class="icon-btn" data-move="${esc(p.id)}" data-dir="-1" aria-label="Subir ${esc(p.nome)}" ${idx===0?"disabled":""}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 15 6-6 6 6"/></svg></button><button class="icon-btn" data-move="${esc(p.id)}" data-dir="1" aria-label="Descer ${esc(p.nome)}" ${idx===lista.length-1?"disabled":""}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>`}</span>
             <button class="btn btn-ghost btn-sm" data-edit="${esc(p.id)}">Editar</button>
           </div></div>`;}).join("") : `<div class="empty" style="margin-top:8px;padding:18px">Nenhum produto nesta categoria.</div>`)+`</div>`;
@@ -1517,7 +1666,7 @@ $("#fCat").addEventListener("change",renderProdutos);
 $("#prodList").addEventListener("change",async e=>{
   const id=e.target.dataset.toggle; if(!id) return;
   const p=D.produtos.find(x=>x.id===id); const novo=e.target.checked;
-  try{ const s=await acao(null,()=>MB.salvarProduto({...p,ativo:novo}),novo?`${p.nome} disponível`:`${p.nome} marcado como esgotado`); Object.assign(p,s); }
+  try{ const s=await acao(null,()=>MB.salvarProduto({...p,ativo:novo}),novo?`${p.nome} voltou para o cardápio`:`${p.nome} saiu do cardápio`); Object.assign(p,s); }
   catch(err){ e.target.checked=!novo; return; }
   renderProdutos();
 });
